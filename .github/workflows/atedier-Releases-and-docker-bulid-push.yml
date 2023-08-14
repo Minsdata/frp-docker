@@ -2,7 +2,7 @@ name: Scheduled Workflow
 
 on:
   schedule:
-    - cron: "0 0 */7 * *"
+    - cron: "0 0 */10 * *"
 
 jobs:
   build_and_publish:
