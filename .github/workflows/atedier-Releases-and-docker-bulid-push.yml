@@ -5,9 +5,9 @@ on:
     - cron: "0 0 */10 * *"
 
 jobs:
-  build_and_publish:
+  image:
+    name: Build Image from Dockerfile
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
