@@ -29,7 +29,7 @@ jobs:
         with:
           context: .
           file: ./dockerfiles/Dockerfile-for-frpc
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
           push: true
           tags: |
              minsdatadocker/frpc
@@ -39,7 +39,7 @@ jobs:
         with:
           context: .
           file: ./dockerfiles/Dockerfile-for-frps
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
           push: true
           tags: |
              minsdatadocker/frps
