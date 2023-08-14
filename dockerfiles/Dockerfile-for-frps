@@ -3,7 +3,7 @@ FROM alpine:latest
 LABEL maintainer="Minsdata"
 
 ENV FRP_VERSION 0.51.3
-ENV FRP_ARCH linux_arm64
+ENV FRP_ARCH linux_amd64
 ENV FRPS_OR_FRPC frps
 
 RUN apk update --no-cache \
