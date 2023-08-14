@@ -1,9 +1,17 @@
-name: Scheduled Workflow
+name: Build Image and Publish to Dockerhub & GPR
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
-
+  release:
+    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test'
+permissions:
+  contents: read
+  
 jobs:
   image:
     name: Build Image from Dockerfile
