@@ -3,8 +3,8 @@ name: Monitor frp/fatedier Releases
 on:
   release:
     types:
-      - released
-    repositories:
+      - published
+    repository:
       - fatedier/frp
 
 jobs:
