@@ -25,19 +25,19 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Pull and Compress Docker Images
-         Run |
+        run: |
+          # Replace these with the actual image names and tags you used in the previous step
+          IMAGE_NAMES_TAGS="minsdatadocker/frps:v$FRP_VERSION minsdatadocker/frpc:v$FRP_VERSION"
 
-         IMAGE_NAMES_TAGS="minsdatadocker/frps:v$FRP_VERSION minsdatadocker/frpc:v$FRP_VERSION"
-  
-         for name_tag in $IMAGE_NAMES_TAGS; do
-           docker pull $name_tag
-           image_name=$(echo $name_tag | cut -d':' -f1)
-           image_tag=$(echo $name_tag | cut -d':' -f2)
-           frp_arch=$(docker image inspect $name_tag --format '{{.Os}}/{{.Architecture}}' | sort | uniq)
-           new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-  
-           docker save $name_tag | gzip > $new_image_name
-         done
+          for name_tag in $IMAGE_NAMES_TAGS; do
+            docker pull $name_tag
+            image_name=$(echo $name_tag | cut -d':' -f1)
+            image_tag=$(echo $name_tag | cut -d':' -f2)
+            frp_arch=$(docker image inspect $name_tag --format '{{.Os}}/{{.Architecture}}' | sort | uniq)
+            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
+
+            docker save $name_tag | gzip > $new_image_name
+          done
 
       - name: Upload GZ Archives to GitHub Release
         uses: actions/upload-artifact@v2
