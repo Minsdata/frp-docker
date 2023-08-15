@@ -53,6 +53,7 @@ jobs:
           docker buildx build -f $DOCKERFILE \
             --build-arg FRP_VERSION=$FRP_VERSION \
             --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frpc:latest .
           
       - name: Build and Push FRPS Docker image
@@ -62,4 +63,5 @@ jobs:
           docker buildx build -f $DOCKERFILE \
             --build-arg FRP_VERSION=$FRP_VERSION \
             --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest .
