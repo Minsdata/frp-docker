@@ -43,11 +43,11 @@ jobs:
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
       
-      - name: Build Docker image with FRP version
-        run: |
-         echo "FRP_VERSION: $FRP_VERSION"
-         docker build -f ./dockerfiles/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
-         docker build -f ./dockerfiles/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
+    #  - name: Build Docker image with FRP version
+     #   run: |
+     #    echo "FRP_VERSION: $FRP_VERSION"
+      #   docker build -f ./dockerfiles/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
+       #  docker build -f ./dockerfiles/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
       
       - name: Build and push frpc
         uses: docker/build-push-action@v4
@@ -59,7 +59,7 @@ jobs:
           tags: |
              minsdatadocker/frpc
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
+             FRP_VERSION=$FRP_VERSION
 
       - name: Build and push frps
         uses: docker/build-push-action@v4
@@ -71,4 +71,4 @@ jobs:
           tags: |
              minsdatadocker/frps
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
+             FRP_VERSION=$FRP_VERSION
