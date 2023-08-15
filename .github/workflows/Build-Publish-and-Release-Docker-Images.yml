@@ -46,7 +46,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ env.FRP_VERSION }}
+          tag_name: v${{ env.FRP_VERSION }}-${{ github.run_id }}
           release_name: Release v${{ env.FRP_VERSION }}
           body: Release notes for v${{ env.FRP_VERSION }}  
           draft: false
