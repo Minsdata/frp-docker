@@ -1,4 +1,4 @@
-name: Build, Publish, and Release Docker Images
+name: Build and Publish FRP Docker Images
 
 on:
   release:
@@ -10,46 +10,42 @@ on:
         required: true
         default: 'test the action'
 
+env:
+  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6"
+  IMAGE_NAME_PREFIX: "minsdatadocker"
 
 jobs:
-  create_release:
-    name: Create Release and Attach Compressed Images
+  build_and_publish:
+    name: Build and Publish Images
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      # ... (your existing steps for building and pushing Docker images)
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+    - name: Create GZ Archives
+      run: |
+        ARCHIVE_DIR="./gz_archives"
+        mkdir -p $ARCHIVE_DIR
+        for frp_arch in $FRP_ARCHS; do
+          image_name="${IMAGE_NAME_PREFIX}/frps:${FRP_VERSION}"
+          new_image_name="${image_name}_${frp_arch}_v${FRP_VERSION}.gz"
+          docker save $image_name | gzip > $ARCHIVE_DIR/$new_image_name
+        done
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    - name: Upload GZ Archives to GitHub Release
+      uses: actions/upload-artifact@v2
+      with:
+        name: gz-archives
+        path: ./gz_archives/
 
-      - name: Set up Git environment
-        run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name | cut -c 2-)
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
-          FRP_ARCHS="linux_amd64 linux_arm64 linux_ppc64le linux_s390x linux_386 linux_arm_v8 linux_arm_v7 linux_arm_v6"
-
-      - name: Compress Docker Images
-        run: |
-          IMAGE_NAME_PREFIX="minsdatadocker"
-          for frp_arch in $FRP_ARCHS; do
-            image_tag=$FRP_VERSION
-            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
-            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-            docker save $image_name | gzip > $new_image_name
-          done
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-         tag_name: v${{ env.FRP_VERSION }}
-         release_name: Release v${{ env.FRP_VERSION }}
-         body: Release notes for v${{ env.FRP_VERSION }}  
-         draft: false
-         prerelease: false
-        env:
-         GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
-
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v$FRP_VERSION
+        release_name: Release $FRP_VERSION
+        body: This is release $FRP_VERSION
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
