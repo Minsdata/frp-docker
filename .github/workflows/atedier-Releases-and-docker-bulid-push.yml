@@ -38,7 +38,11 @@ jobs:
          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
          FRP_VERSION=${FRP_VERSION#v}  # Remove "v" prefix
          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
-
+      
+      - name: Output FRP_VERSION
+        run: |
+          echo "FRP_VERSION: $FRP_VERSION"
+      
       - name: Build and push frpc
         uses: docker/build-push-action@v4
         with:
