@@ -46,32 +46,35 @@ jobs:
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
           
-      - name: Build and Push FRPS Docker image
+      - name: Build Docker image
         run: |
-          DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-          
-          docker buildx build -f $DOCKERFILE \
-            --build-arg FRP_VERSION=$FRP_VERSION \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frps:latest \
-            .
+         DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
+    
 
-          docker push $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
-          docker push $IMAGE_NAME_PREFIX/frps:latest
+         docker buildx build -f $DOCKERFILE \
+           --build-arg FRP_VERSION=$FRP_VERSION \
+           --platform $PLATFORMS \
+           -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+           -t $IMAGE_NAME_PREFIX/frps:latest \
+           .
 
-
-          FRP_ARCH=$(docker manifest inspect $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION | jq -r '.platforms[].architecture' | sort | uniq)
-
-
-          docker tag $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
-          docker tag $IMAGE_NAME_PREFIX/frps:latest $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:latest
+      - name: Push Docker image
+        run: |
+         docker push $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
+         docker push $IMAGE_NAME_PREFIX/frps:latest
 
 
-          mkdir -p gz_archives
-          docker save -o gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
-          tar czvf gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
-          rm gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+         FRP_ARCH=$(docker manifest inspect $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION | jq -r '.platforms[].architecture' | sort | uniq)
+
+
+         docker tag $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
+         docker tag $IMAGE_NAME_PREFIX/frps:latest $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:latest
+
+
+         mkdir -p gz_archives
+         docker save -o gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
+         tar czvf gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+         rm gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
 
 
     
