@@ -1,4 +1,4 @@
-name: Build and Publish FRP Docker Images
+#name: Build and Publish FRP Docker Images
 
 on:
   workflow_dispatch:
@@ -8,13 +8,13 @@ on:
         required: true
         default: 'test the action'
 
-jobs:
-  create_release:
-    name: Create Release and Attach Compressed Images
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+#jobs:
+ # create_release:
+ #   name: Create Release and Attach Compressed Images
+ #   runs-on: ubuntu-latest
+ #   steps:
+ #     - name: Check out repository
+ #       uses: actions/checkout@v2
 
       # ... (other steps)
 
