@@ -27,24 +27,23 @@ jobs:
       - name: Compress Docker Images
         run: |
           IMAGE_NAME_PREFIX="minsdatadocker"
+          mkdir -p compressed_images
           for frp_arch in $FRP_ARCHS; do
             image_tag=$FRP_VERSION
             image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
             new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-            docker save $image_name | gzip > $new_image_name
+            docker save $image_name | gzip > compressed_images/$new_image_name
           done
 
-      - name: Create Zip Archive
+      - name: Zip Compressed Images
         run: |
-          mkdir -p compressed_images
-          mv minsdatadocker_frps_v${FRP_VERSION}_linux_amd64.gz compressed_images/
-          mv minsdatadocker_frps_v${FRP_VERSION}_linux_arm64.gz compressed_images/
-          zip -r frp-archives.zip compressed_images
+          mv compressed_images/* frp-archives/
+          zip -r frp-archives.zip frp-archives
 
-      - name: Upload Zip Archive as Artifact
+      - name: Upload GZ Archives as Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: frp-archives
+          name: gz-archives
           path: ./frp-archives.zip
 
       - name: Create GitHub Release
@@ -58,11 +57,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
-        
-      - name: Upload Zip Archive as Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./frp-archives.zip
-          asset_name: frp-archives.zip
-          asset_content_type: application/zip
