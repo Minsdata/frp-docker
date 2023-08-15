@@ -41,48 +41,26 @@ jobs:
           FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
           FRP_VERSION=${FRP_VERSION#v}
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
-      
+
       - name: Output FRP_VERSION
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
-          
-      - name: Build Docker image
+
+      - name: Build and Push FRPS Docker image
         run: |
-         DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-    
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
 
-         docker buildx build -f $DOCKERFILE \
-           --build-arg FRP_VERSION=$FRP_VERSION \
-           --platform $PLATFORMS \
-           -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
-           -t $IMAGE_NAME_PREFIX/frps:latest \
-           .
-
-      - name: Push Docker image
-        run: |
-         docker push $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
-         docker push $IMAGE_NAME_PREFIX/frps:latest
-
-
-         FRP_ARCH=$(docker manifest inspect $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION | jq -r '.platforms[].architecture' | sort | uniq)
-
-
-         docker tag $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
-         docker tag $IMAGE_NAME_PREFIX/frps:latest $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:latest
-
-
-         mkdir -p gz_archives
-         docker save -o gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frps-${FRP_ARCH}:v$FRP_VERSION
-         tar czvf gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
-         rm gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
-
-
-    
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frps:latest \
+            --push .
 
       - name: Build and Push FRPC Docker image
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
-          
+
           docker buildx build -f $DOCKERFILE \
             --build-arg FRP_VERSION=$FRP_VERSION \
             --platform $PLATFORMS \
@@ -90,17 +68,36 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frpc:latest \
             --push .
 
-            
-      - name: Create gz Archives
+      - name: Delete Local Images
         run: |
-          mkdir -p gz_archives
-          docker save -o gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
-          tar czvf gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
-          rm gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+          docker rmi $(docker images -q $IMAGE_NAME_PREFIX/frpc)
+          docker rmi $(docker images -q $IMAGE_NAME_PREFIX/frps)
 
-          docker save -o gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
-          tar czvf gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
-          rm gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+      - name: Rebuild Images and Create GZ Archives
+        run: |
+          FRP_ARCHS="linux_amd64 linux_arm64 linux_ppc64le linux_s390x linux_386 linux_arm_v8 linux_arm_v7 linux_arm_v6"
+          for FRP_ARCH in $FRP_ARCHS; do
+            docker buildx build -f $DOCKERFILE \
+              --build-arg FRP_VERSION=$FRP_VERSION \
+              --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 \
+              -t $IMAGE_NAME_PREFIX/frpc:${FRP_ARCH}_v$FRP_VERSION \
+              -t $IMAGE_NAME_PREFIX/frpc:${FRP_ARCH}_latest .
+
+            docker buildx build -f $DOCKERFILE \
+              --build-arg FRP_VERSION=$FRP_VERSION \
+              --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 \
+              -t $IMAGE_NAME_PREFIX/frps:${FRP_ARCH}_v$FRP_VERSION \
+              -t $IMAGE_NAME_PREFIX/frps:${FRP_ARCH}_latest .
+
+            mkdir -p gz_archives
+            docker save -o gz_archives/frpc_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar $IMAGE_NAME_PREFIX/frpc:${FRP_ARCH}_v$FRP_VERSION
+            tar czvf gz_archives/frpc_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar.gz gz_archives/frpc_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar
+            rm gz_archives/frpc_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar
+
+            docker save -o gz_archives/frps_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar $IMAGE_NAME_PREFIX/frps:${FRP_ARCH}_v$FRP_VERSION
+            tar czvf gz_archives/frps_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar.gz gz_archives/frps_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar
+            rm gz_archives/frps_${FRP_ARCH}_v$FRP_VERSION_docker_image.tar
+          done
 
       - name: Upload gz Archives to GitHub Release
         uses: actions/upload-artifact@v2
