@@ -46,8 +46,8 @@ jobs:
       - name: Build Docker image with FRP version
         run: |
           echo "FRP_VERSION: $FRP_VERSION"  # 输出 FRP_VERSION 的值，确保它正确传递
-          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
-          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
+          docker build -f ./path/to/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
+          docker build -f ./path/to/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
       
       - name: Build and push frpc
         uses: docker/build-push-action@v4
