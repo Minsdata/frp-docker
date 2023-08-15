@@ -67,3 +67,31 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frpc:latest \
             --push .
+
+            
+      - name: Create gz Archives
+        run: |
+          mkdir -p gz_archives
+          docker save -o gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
+          tar czvf gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+          rm gz_archives/frps_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+
+          docker save -o gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
+          tar czvf gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar.gz gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+          rm gz_archives/frpc_${FRP_VERSION}_${FRP_ARCH}_docker_image.tar
+
+      - name: Upload gz Archives to GitHub Release
+        uses: actions/upload-artifact@v2
+        with:
+          name: gz-archives
+          path: gz_archives/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v$FRP_VERSION
+          release_name: Release $FRP_VERSION
+          body: This is release $FRP_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
