@@ -43,32 +43,32 @@ jobs:
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
       
-    #  - name: Build Docker image with FRP version
-     #   run: |
-     #    echo "FRP_VERSION: $FRP_VERSION"
-      #   docker build -f ./dockerfiles/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
-       #  docker build -f ./dockerfiles/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
+      - name: Build Docker image with FRP version
+        run: |
+         echo "FRP_VERSION: $FRP_VERSION"
+         docker buildx build -f ./dockerfiles/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 -t minsdatadocker/frpc . --push
+         docker buildx build -f ./dockerfiles/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 -t minsdatadocker/frps . --push
       
-      - name: Build and push frpc
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./dockerfiles/Dockerfile-for-frpc
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-             minsdatadocker/frpc
-          build-args: |
-             FRP_VERSION=$FRP_VERSION
-
-      - name: Build and push frps
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./dockerfiles/Dockerfile-for-frps
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-             minsdatadocker/frps
-          build-args: |
-             FRP_VERSION=$FRP_VERSION
+   #   - name: Build and push frpc
+   #     uses: docker/build-push-action@v4
+   #     with:
+   #       context: .
+   #       file: ./dockerfiles/Dockerfile-for-frpc
+   #       platforms: linux/amd64,linux/arm64
+   #       push: true
+   #       tags: |
+   #          minsdatadocker/frpc
+   #       build-args: |
+   #          FRP_VERSION=$FRP_VERSION
+#
+#      - name: Build and push frps
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          file: ./dockerfiles/Dockerfile-for-frps
+#          platforms: linux/amd64,linux/arm64
+#          push: true
+#          tags: |
+#             minsdatadocker/frps
+#          build-args: |
+#             FRP_VERSION=$FRP_VERSION
