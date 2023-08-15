@@ -45,12 +45,11 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v${FRP_VERSION}
-          release_name: Release v${FRP_VERSION}
-          body: Release notes for v${FRP_VERSION}  
-          draft: false
-          prerelease: false
+         tag_name: v${{ env.FRP_VERSION }}
+         release_name: Release v${{ env.FRP_VERSION }}
+         body: Release notes for v${{ env.FRP_VERSION }}  
+         draft: false
+         prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
-          FRP_VERSION: ${{ env.FRP_VERSION }}
+         GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
 
