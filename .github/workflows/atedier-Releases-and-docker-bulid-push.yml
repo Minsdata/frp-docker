@@ -1,21 +1,24 @@
-name: Build Image and Publish to Dockerhub & GPR
+name: Build and Publish FRP Docker Images
 
 on:
   release:
-    types: [ created ]
+    types: [created]
   workflow_dispatch:
     inputs:
       tag:
         description: 'Image tag'
         required: true
         default: 'test the action'
-permissions:
-  contents: read
-  
+
+env:
+  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6"
+  IMAGE_NAME_PREFIX: "minsdatadocker"
+
 jobs:
-  image:
-    name: Build Image from Dockerfile
+  build_and_publish:
+    name: Build and Publish Images
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -32,19 +35,31 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Get latest FRP version
+      - name: Get FRP Version
         id: get_version
         run: |
-         FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
-         FRP_VERSION=${FRP_VERSION#v}  # Remove "v" prefix
-         echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          FRP_VERSION=${FRP_VERSION#v}
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
       
       - name: Output FRP_VERSION
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
-      
-      - name: Build Docker image with FRP version and Push image
+
+      - name: Build and Push FRPC Docker image
         run: |
-         echo "FRP_VERSION: $FRP_VERSION"
-         docker buildx build -f ./dockerfiles/Dockerfile-for-frpc --build-arg FRP_VERSION=$FRP_VERSION --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 -t minsdatadocker/frpc . --push
-         docker buildx build -f ./dockerfiles/Dockerfile-for-frps --build-arg FRP_VERSION=$FRP_VERSION --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6 -t minsdatadocker/frps . --push
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
+          
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frpc:latest .
+          
+      - name: Build and Push FRPS Docker image
+        run: |
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
+          
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frps:latest .
