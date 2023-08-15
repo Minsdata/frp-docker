@@ -1,7 +1,16 @@
-name: Build Image and Publish to Dockerhub
+name: Build Image and Publish to Dockerhub & GPR
+
 on:
-  schedule:
-    - cron: "30 * * * *"
+  release:
+    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test'
+permissions:
+  contents: read
   
 jobs:
   image:
@@ -22,6 +31,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+
+      - name: Get latest FRP version
+        id: get_version
+        run: |
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+
+      - name: Build Docker image with FRP version
+        run: |
+          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
+          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
 
       - name: Build and push frpc
         uses: docker/build-push-action@v4
