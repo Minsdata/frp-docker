@@ -1,10 +1,14 @@
-name: Build, Publish, and Release Docker Images
+name: Build and Publish FRP Docker Images
 
 on:
-  workflow_run:
-    workflows: ["Build and Publish FRP Docker Images"]
-    types:
-      - completed
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test the action'
 
 jobs:
   create_release:
