@@ -35,29 +35,30 @@ jobs:
       - name: Get latest FRP version
         id: get_version
         run: |
-          FRP_VERSION_V=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
-          echo "FRP_VERSION=$FRP_VERSION_V" >> $GITHUB_ENV
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          FRP_VERSION=${FRP_VERSION#v}  # Remove "v" prefix
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Build and push frpc
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./dockerfiles/Dockerfile-for-frpc
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
              minsdatadocker/frpc
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION_V }}
+             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
 
       - name: Build and push frps
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./dockerfiles/Dockerfile-for-frps
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
              minsdatadocker/frps
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION_V }}
+             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
