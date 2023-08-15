@@ -35,9 +35,9 @@ jobs:
       - name: Get latest FRP version
         id: get_version
         run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
-          FRP_VERSION=${FRP_VERSION#v}  # Remove "v" prefix
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+         FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+         FRP_VERSION=${FRP_VERSION#v}  # Remove "v" prefix
+         echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Build and push frpc
         uses: docker/build-push-action@v4
