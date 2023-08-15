@@ -26,38 +26,42 @@ jobs:
 
       - name: Compress Docker Images
         run: |
-         IMAGE_NAME_PREFIX="minsdatadocker"
-         mkdir -p compressed_images
+          IMAGE_NAME_PREFIX="minsdatadocker"
+          for frp_arch in $FRP_ARCHS; do
+            image_tag=$FRP_VERSION
+            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
+            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
+            docker save $image_name | gzip > $new_image_name
+          done
 
-         for frp_arch in $FRP_ARCHS; do
-          image_tag=$FRP_VERSION
-          image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
-          new_image_name="compressed_images/${image_name}_${frp_arch}_v${image_tag}.gz"
-          docker save $image_name | gzip > $new_image_name
-         done
+      - name: Create Zip Archive
+        run: |
+          mkdir -p compressed_images
+          mv *_v${FRP_VERSION}.gz compressed_images/
+          zip -r frp-archives.zip compressed_images
 
-      - name: Upload GZ Archives as Artifacts
+      - name: Upload Zip Archive as Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: gz-archives
-          path: ./compressed_images
+          name: frp-archives
+          path: ./frp-archives.zip
 
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ env.FRP_VERSION }}
+          tag_name: v${{ env.FRP_VERSION }}-${{ github.run_id }}
           release_name: Release v${{ env.FRP_VERSION }}
           body: Release notes for v${{ env.FRP_VERSION }}  
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
-
-      - name: Upload GZ Archives as Release Assets
+        
+      - name: Upload Zip Archive as Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./
+          asset_path: ./frp-archives.zip
           asset_name: frp-archives.zip
           asset_content_type: application/zip
