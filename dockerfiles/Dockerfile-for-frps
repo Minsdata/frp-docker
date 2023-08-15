@@ -1,6 +1,8 @@
 FROM alpine:latest
 
 LABEL maintainer="Minsdata"
+LABEL description="Docker image for frps (Version: $FRP_VERSION) make from fatedier/frp latest relase. 更新至 (Version: $FRP_VERSION) 源码构建frps内网穿透服务端"
+LABEL architectures="x86-64,arm64,s390x,386,arm,ppc64le"
 
 ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
