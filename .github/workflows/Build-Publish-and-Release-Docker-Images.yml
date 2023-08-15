@@ -24,20 +24,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Git environment
+      - name: Pull and Compress Docker Images
         run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name | cut -c 2-)
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+          # Define the image names and tags you used in the previous step
+          IMAGE_NAMES_TAGS="minsdatadocker/frps:v$FRP_VERSION minsdatadocker/frpc:v$FRP_VERSION"
           FRP_ARCHS="linux_amd64 linux_arm64 linux_ppc64le linux_s390x linux_386 linux_arm_v8 linux_arm_v7 linux_arm_v6"
 
-      - name: Compress Docker Images
-        run: |
-          IMAGE_NAME_PREFIX="minsdatadocker"
-          for frp_arch in $FRP_ARCHS; do
-            image_tag=$FRP_VERSION
-            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
-            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-            docker save $image_name | gzip > $new_image_name
+          # Loop through each image and tag
+          for name_tag in $IMAGE_NAMES_TAGS; do
+            docker pull $name_tag
+            image_name=$(echo $name_tag | cut -d':' -f1)
+            image_tag=$(echo $name_tag | cut -d':' -f2)
+
+            for frp_arch in $FRP_ARCHS; do
+              new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
+
+              # Save the image and compress it
+              docker save $name_tag | gzip > $new_image_name
+            done
           done
 
       - name: Upload GZ Archives to GitHub Release
@@ -45,3 +49,12 @@ jobs:
         with:
           name: gz-archives
           path: ./
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v$FRP_VERSION
+          release_name: Release $FRP_VERSION
+          body: This is release $FRP_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
