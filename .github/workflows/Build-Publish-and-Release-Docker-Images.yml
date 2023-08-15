@@ -43,8 +43,8 @@ jobs:
       uses: actions/create-release@v1
       with:
         tag_name: v$FRP_VERSION
-        release_name: Release $FRP_VERSION
-        body: This is release $FRP_VERSION
+        release_name: Release v$FRP_VERSION
+        body: This is release v$FRP_VERSION
         draft: false
         prerelease: false
       env:
