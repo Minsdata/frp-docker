@@ -1,17 +1,8 @@
-name: Build Image and Publish to Dockerhub & GPR
+name: Build Image and Publish to Dockerhub
+
 on:
   schedule:
     - cron: "*/10 * * * *"
-  release:
-    types: [ created ]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Image tag'
-        required: true
-        default: 'test'
-permissions:
-  contents: read
   
 jobs:
   image:
