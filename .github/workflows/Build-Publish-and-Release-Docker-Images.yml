@@ -51,6 +51,6 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
           FRP_VERSION: ${{ env.FRP_VERSION }}
 
