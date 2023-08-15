@@ -10,9 +10,10 @@ on:
         required: true
         default: 'test the action'
 
+
 jobs:
   create_release:
-    name: Create Release and Compress Images
+    name: Create Release and Attach Compressed Images
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -24,25 +25,29 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Pull and Compress Docker Images
+      - name: Set up Git environment
         run: |
-          # Define the image names and tags you used in the previous step
-          IMAGE_NAMES_TAGS="minsdatadocker/frps:v$FRP_VERSION minsdatadocker/frpc:v$FRP_VERSION"
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name | cut -c 2-)
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
           FRP_ARCHS="linux_amd64 linux_arm64 linux_ppc64le linux_s390x linux_386 linux_arm_v8 linux_arm_v7 linux_arm_v6"
 
-          # Loop through each image and tag
-          for name_tag in $IMAGE_NAMES_TAGS; do
-            docker pull $name_tag
-            image_name=$(echo $name_tag | cut -d':' -f1)
-            image_tag=$(echo $name_tag | cut -d':' -f2)
-
-            for frp_arch in $FRP_ARCHS; do
-              new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-
-              # Save the image and compress it
-              docker save $name_tag | gzip > $new_image_name
-            done
+      - name: Compress Docker Images
+        run: |
+          IMAGE_NAME_PREFIX="minsdatadocker"
+          for frp_arch in $FRP_ARCHS; do
+            image_tag=$FRP_VERSION
+            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
+            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
+            docker save $image_name | gzip > $new_image_name
           done
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${FRP_VERSION}
+          release_name: Release v${FRP_VERSION}
+          body: Release notes for v${FRP_VERSION}
 
       - name: Upload GZ Archives to GitHub Release
         uses: actions/upload-artifact@v2
@@ -50,11 +55,22 @@ jobs:
           name: gz-archives
           path: ./
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v$FRP_VERSION
-          release_name: Release $FRP_VERSION
-          body: This is release $FRP_VERSION
+      - name: Attach GZ Archives to GitHub Release
+        run: |
+          # Replace with your GitHub token
+          GITHUB_TOKEN=$YOUR_GITHUB_TOKEN
+
+          # Get the release ID from the output of the create_release step
+          RELEASE_ID=${{ steps.create_release.outputs.release_id }}
+
+          # Upload each gz archive as a release asset
+          for frp_arch in $FRP_ARCHS; do
+            archive_name="${frp_arch}_v${FRP_VERSION}.gz"
+            curl -sSL \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/gzip" \
+              --data-binary "@$archive_name" \
+              "https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${archive_name}"
+          done
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
