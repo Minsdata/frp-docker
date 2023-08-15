@@ -47,30 +47,10 @@ jobs:
         with:
           tag_name: v${FRP_VERSION}
           release_name: Release v${FRP_VERSION}
-          body: Release notes for v${FRP_VERSION}
-
-      - name: Upload GZ Archives to GitHub Release
-        uses: actions/upload-artifact@v2
-        with:
-          name: gz-archives
-          path: ./
-
-      - name: Attach GZ Archives to GitHub Release
-        run: |
-          # Replace with your GitHub token
-          GITHUB_TOKEN=$YOUR_GITHUB_TOKEN
-
-          # Get the release ID from the output of the create_release step
-          RELEASE_ID=${{ steps.create_release.outputs.release_id }}
-
-          # Upload each gz archive as a release asset
-          for frp_arch in $FRP_ARCHS; do
-            archive_name="${frp_arch}_v${FRP_VERSION}.gz"
-            curl -sSL \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Content-Type: application/gzip" \
-              --data-binary "@$archive_name" \
-              "https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${archive_name}"
-          done
+          body: Release notes for v${FRP_VERSION}  
+          draft: false
+          prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FRP_VERSION: ${{ env.FRP_VERSION }}
+
