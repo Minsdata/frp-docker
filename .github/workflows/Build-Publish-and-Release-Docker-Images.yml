@@ -1,4 +1,4 @@
-name: Build and Publish FRP Docker Images
+name: Build, Publish, and Release Docker Images
 
 on:
   release:
