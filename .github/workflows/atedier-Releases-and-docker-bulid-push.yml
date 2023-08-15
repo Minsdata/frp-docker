@@ -39,27 +39,18 @@ jobs:
           FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
-      - name: Build Docker image with FRP version
-        run: |
-          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frpc .
-          docker build --build-arg FRP_VERSION=$FRP_VERSION -t minsdatadocker/frps .
-
-      - name: Build and push frpc
-        uses: docker/build-push-action@v4
+      - name: Build and push frpc and frps
+        uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./dockerfiles/Dockerfile-for-frpc
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          platforms: |
+            linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
-             minsdatadocker/frpc
-
-      - name: Build and push frps
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./dockerfiles/Dockerfile-for-frps
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6
-          push: true
-          tags: |
-             minsdatadocker/frps
+             minsdatadocker/frpc:latest
+             minsdatadocker/frps:latest
+          build-args: |
+             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
+          dockerfile: |
+             ./dockerfiles/Dockerfile-for-frpc
+             ./dockerfiles/Dockerfile-for-frps
