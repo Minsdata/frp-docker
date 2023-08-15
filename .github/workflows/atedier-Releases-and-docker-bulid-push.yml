@@ -32,7 +32,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-
       - name: Get latest FRP version
         id: get_version
         run: |
@@ -51,6 +50,3 @@ jobs:
              minsdatadocker/frps:latest
           build-args: |
              FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
-          dockerfile: |
-             ./dockerfiles/Dockerfile-for-frpc
-             ./dockerfiles/Dockerfile-for-frps
