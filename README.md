@@ -42,7 +42,7 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps_config/frps.ini
 ```
-**Edit configuration file (frps.ini)**  
+**Edit configuration file (frps.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
@@ -72,7 +72,7 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps_config/frps.ini
 ```
-**Edit configuration file (frpc.ini)**  
+**Edit configuration file (frpc.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
