@@ -26,19 +26,21 @@ jobs:
 
       - name: Compress Docker Images
         run: |
-          IMAGE_NAME_PREFIX="minsdatadocker"
-          for frp_arch in $FRP_ARCHS; do
-            image_tag=$FRP_VERSION
-            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
-            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-            docker save $image_name | gzip > $new_image_name
-          done
+         IMAGE_NAME_PREFIX="minsdatadocker"
+         mkdir -p compressed_images
+
+         for frp_arch in $FRP_ARCHS; do
+          image_tag=$FRP_VERSION
+          image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
+          new_image_name="compressed_images/${image_name}_${frp_arch}_v${image_tag}.gz"
+          docker save $image_name | gzip > $new_image_name
+         done
 
       - name: Upload GZ Archives as Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: gz-archives
-          path: ./
+          path: ./compressed_images
 
       - name: Create GitHub Release
         id: create_release
