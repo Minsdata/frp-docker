@@ -45,16 +45,6 @@ jobs:
       - name: Output FRP_VERSION
         run: |
           echo "FRP_VERSION: $FRP_VERSION"
-
-      - name: Build and Push FRPC Docker image
-        run: |
-          DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
-          
-          docker buildx build -f $DOCKERFILE \
-            --build-arg FRP_VERSION=$FRP_VERSION \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frpc:latest .
           
       - name: Build and Push FRPS Docker image
         run: |
@@ -65,3 +55,17 @@ jobs:
             --platform $PLATFORMS \
             -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest .
+          docker push $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
+          docker push $IMAGE_NAME_PREFIX/frps:latest
+
+      - name: Build and Push FRPC Docker image
+        run: |
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
+          
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frpc:latest .
+          docker push $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
+          docker push $IMAGE_NAME_PREFIX/frpc:latest
