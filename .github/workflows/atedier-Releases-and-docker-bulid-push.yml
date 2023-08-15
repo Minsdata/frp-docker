@@ -35,8 +35,8 @@ jobs:
       - name: Get latest FRP version
         id: get_version
         run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+          FRP_VERSION_V=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          echo "FRP_VERSION=$FRP_VERSION_V" >> $GITHUB_ENV
 
       - name: Build and push frpc
         uses: docker/build-push-action@v4
@@ -48,7 +48,7 @@ jobs:
           tags: |
              minsdatadocker/frpc
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
+             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION_V }}
 
       - name: Build and push frps
         uses: docker/build-push-action@v4
@@ -60,4 +60,4 @@ jobs:
           tags: |
              minsdatadocker/frps
           build-args: |
-             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION }}
+             FRP_VERSION=${{ steps.get_version.outputs.FRP_VERSION_V }}
