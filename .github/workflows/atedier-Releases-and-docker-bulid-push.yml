@@ -94,4 +94,4 @@ jobs:
           release_name: Release $FRP_VERSION
           body: This is release $FRP_VERSION
         env:
-          GITHUB_TOKEN: ${{ REALSE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
