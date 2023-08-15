@@ -21,7 +21,37 @@ linux/386
 linux/ppc64le  
 linux/s390x  
 
-# Quick start
+# Quick start  (frps)
+  
+**Docker Run**  
+```
+docker run -d \
+  --name frps \
+  --restart unless-stopped \
+  -v ~/frps.ini:/app/frps/frps_config/frps.ini \
+  minsdatadocker/frps:latest  
+```
+**Docker-Compose**  
+```
+version: '3'
+services:
+  frps:
+    image: minsdatadocker/frps:latest
+    container_name: frps
+    restart: unless-stopped
+    volumes:
+      - ~/frps.ini:/app/frps/frps_config/frps.ini
+```
+# Edit configuration file (frps.ini)
+**Please refer to [README](https://github.com/fatedier/frp#readme)**  
+**Example**
+```
+# frps.ini
+[common]
+bind_port = 7000
+```  
+  
+# Quick start (frpc)
   
 **Docker Run**  
 ```
