@@ -21,8 +21,8 @@ linux/386
 linux/ppc64le  
 linux/s390x  
 
-# Quick start  (frps)
-  
+# frps 
+**Quick start**
 **Docker Run**  
 ```
 docker run -d \
@@ -42,7 +42,7 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps_config/frps.ini
 ```
-# Edit configuration file (frps.ini)
+**Edit configuration file (frps.ini)**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
@@ -51,8 +51,8 @@ services:
 bind_port = 7000
 ```  
   
-# Quick start (frpc)
-  
+# frpc
+**Quick start**
 **Docker Run**  
 ```
 docker run -d \
@@ -72,7 +72,7 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps_config/frps.ini
 ```
-# Edit configuration file (frpc.ini)
+**Edit configuration file (frpc.ini)**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
