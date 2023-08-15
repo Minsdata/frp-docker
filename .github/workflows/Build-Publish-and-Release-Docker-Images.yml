@@ -37,7 +37,8 @@ jobs:
       - name: Create Zip Archive
         run: |
           mkdir -p compressed_images
-          mv *_v${FRP_VERSION}.gz compressed_images/
+          mv minsdatadocker_frps_v${FRP_VERSION}_linux_amd64.gz compressed_images/
+          mv minsdatadocker_frps_v${FRP_VERSION}_linux_arm64.gz compressed_images/
           zip -r frp-archives.zip compressed_images
 
       - name: Upload Zip Archive as Artifact
