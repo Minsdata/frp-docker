@@ -1,4 +1,4 @@
-#name: Build and Publish FRP Docker Images
+#name: Build and Publish FRP Docker Images to github
 
 on:
   workflow_dispatch:
