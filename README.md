@@ -56,27 +56,34 @@ bind_port = 7000
 **Docker Run**  
 ```
 docker run -d \
-  --name frps \
+  --name frpc \
   --restart unless-stopped \
-  -v ~/frps.ini:/app/frps/frps_config/frps.ini \
-  minsdatadocker/frps:latest  
+  -v ~/frpc.ini:/app/frpc/frpc_config/frpc.ini \
+  minsdatadocker/frpc:latest  
 ```
 **Docker-Compose**  
 ```
 version: '3'
 services:
-  frps:
-    image: minsdatadocker/frps:latest
-    container_name: frps
+  frpc:
+    image: minsdatadocker/frpc:latest
+    container_name: frpc
     restart: unless-stopped
     volumes:
-      - ~/frps.ini:/app/frps/frps_config/frps.ini
+      - ~/frpc.ini:/app/frpc/frpc_config/frpc.ini
 ```
 **Edit configuration file (frpc.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
-# frps.ini
+# frpc.ini
 [common]
-bind_port = 7000
+server_addr = x.x.x.x
+server_port = 7000
+
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 6000
 ```
