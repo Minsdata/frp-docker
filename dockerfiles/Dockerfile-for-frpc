@@ -6,10 +6,12 @@ ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
 ENV FRP_ARCH linux_amd64
 ENV FRPS_OR_FRPC frpc
+
 RUN echo "FRP_VERSION=$FRP_VERSION" \
     &&  echo "FRP_ARCH=$FRP_ARCH" \
-    &&  echo "FRPS_OR_FRPC=$FRPS_OR_FRPC" \
-    &&  apk update --no-cache \
+    &&  echo "FRPS_OR_FRPC=$FRPS_OR_FRPC"/ 
+
+RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
     &&  apk add --no-cache curl bash \
     &&  cd \
