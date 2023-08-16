@@ -22,7 +22,7 @@ linux/ppc64le
 linux/s390x  
 
 # frps 
-**Deploy**  
+**1.Deploy**  
 **Docker Run**  
 ```
 docker run -d \
@@ -31,7 +31,7 @@ docker run -d \
   -v ~/frps.ini:/app/frps/frps_config/frps.ini \
   minsdatadocker/frps:latest  
 ```
-**1.Docker-Compose**  
+**Docker-Compose**  
 ```
 version: '3'
 services:
