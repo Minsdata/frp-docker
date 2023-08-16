@@ -68,6 +68,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Output FRP_VERSION
+        run: |
+          echo "FRP_VERSION: $FRP_VERSION"
+          
       - name: Build and Push FRPS Docker image
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
