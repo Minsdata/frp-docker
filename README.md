@@ -31,7 +31,7 @@ docker run -d \
   -v ~/frps.ini:/app/frps/frps_config/frps.ini \
   minsdatadocker/frps:latest  
 ```
-**Docker-Compose**  
+**1.Docker-Compose**  
 ```
 version: '3'
 services:
@@ -42,7 +42,7 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps_config/frps.ini
 ```
-**Edit configuration file (frps.ini),**
+**2.Edit configuration file (frps.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
@@ -52,7 +52,7 @@ bind_port = 7000
 ```  
   
 # frpc
-**Deploy**  
+**1.Deploy**  
 **Docker Run**  
 ```
 docker run -d \
@@ -72,7 +72,7 @@ services:
     volumes:
       - ~/frpc.ini:/app/frpc/frpc_config/frpc.ini
 ```
-**Edit configuration file (frpc.ini),**
+**2.Edit configuration file (frpc.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 **Example**
 ```
