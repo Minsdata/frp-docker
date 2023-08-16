@@ -1,17 +1,17 @@
-name: VerCheck Build Push Docker Images to Dockerhub
-#test mode
-#on:
-#  schedule:
-#    - cron: "0 */4 * * *"
-
+name: VerCheck Build Push Release Docker 
 #test mode
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Image tag'
-        required: true
-        default: 'test the action'
+  schedule:
+    - cron: "0 */4 * * *"
+
+#test mode
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      tag:
+#        description: 'Image tag'
+#        required: true
+#        default: 'test the action'
 
 env:
   PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6"
