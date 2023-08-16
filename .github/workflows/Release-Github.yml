@@ -84,23 +84,23 @@ jobs:
 
       - name: Upload FRPS Image Tag
         id: upload_frps_image_tag
-        run: echo ${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }} > frps_image_tag.txt
+        run: echo "::set-output name=FRPS_IMAGE_TAG::${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }}"
 
       - name: Upload FRPC Image Tag
         id: upload_frpc_image_tag
-        run: echo ${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }} > frpc_image_tag.txt
+        run: echo "::set-output name=FRPC_IMAGE_TAG::${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }}"
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
-        uses: actions/create-release@v2
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
           tag_name: v${{ env.FRP_VERSION }}
           release_name: Release v${{ env.FRP_VERSION }}
-          files: |
-            - frps_image_tag.txt
-            - frpc_image_tag.txt
+         # files: |
+         #  - frps_image_tag.txt
+         #  - frpc_image_tag.txt
           body: |
 
              ### Docker images  
