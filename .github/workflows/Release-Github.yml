@@ -1,21 +1,47 @@
-#name: Release-Github
+name: VerCheck Build Push Docker Images to Dockerhub
+
+#on:
+#  schedule:
+#    - cron: "0 */4 * * *"
 on:
-#  workflow_dispatch:
-#    inputs:
+  workflow_dispatch:
+    inputs:
       tag:
- #       description: 'Image tag'
- ##       required: true
-  #      default: 'test the action'
+        description: 'Image tag'
+        required: true
+        default: 'test the action'
 
-#jobs:
- # create_release:
- #   name: Create Release and Attach Compressed Images
- #   runs-on: ubuntu-latest
- #   steps:
- #     - name: Check out repository
- #       uses: actions/checkout@v2
+env:
+  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6"
+  IMAGE_NAME_PREFIX: "minsdatadocker"
 
-      # ... (other steps)
+jobs:
+  build_and_publish:
+    name: Build and Publish Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Get latest Docker Hub version
+        run: |
+          DOCKERHUB_VERSION=$(curl -s https://hub.docker.com/v2/repositories/${IMAGE_NAME_PREFIX}/frps/tags/ | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1 | awk -F 'v' '{print $2}')
+          echo "DOCKERHUB_VERSION=$DOCKERHUB_VERSION" >> $GITHUB_ENV
+
+      - name: Get FRP Version
+        run: |
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          FRP_VERSION=${FRP_VERSION#v}
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+
+      - name: Compare versions and skip if same
+        run: |
+          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
+            echo "Versions are the same. Skipping build and publish."
+            echo "SKIP_BUILD=true" >> $GITHUB_ENV
+          fi
+        shell: bash
 
       - name: Get latest FRP version
         id: get_version
