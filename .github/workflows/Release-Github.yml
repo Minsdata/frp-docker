@@ -84,11 +84,13 @@ jobs:
 
       - name: Upload FRPS Image Tag
         id: upload_frps_image_tag
-        run: echo "::set-output name=FRPS_IMAGE_TAG::${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }}"
+        run: |
+        echo "FRPS_IMAGE_TAG=${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }}" >> $GITHUB_ENV
 
       - name: Upload FRPC Image Tag
         id: upload_frpc_image_tag
-        run: echo "::set-output name=FRPC_IMAGE_TAG::${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }}"
+        run: |
+        echo "FRPC_IMAGE_TAG=${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }}" >> $GITHUB_ENV
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
