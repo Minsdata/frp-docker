@@ -4,7 +4,7 @@ LABEL maintainer="Minsdata"
 
 ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
-ENV FRP_ARCH linux_amd64
+ENV FRP_ARCH linux_arm64
 ENV FRPS_OR_FRPC frps
 
 RUN apk update --no-cache \
