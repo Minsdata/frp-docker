@@ -6,7 +6,7 @@ LABEL description="Docker image for frpc make from fatedier/frp latest relase."
 
 ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
-ENV FRP_ARCH linux_amd64
+ENV FRP_ARCH=${FRP_ARCH}
 ENV FRPS_OR_FRPC frpc
 
 RUN apk update --no-cache \
