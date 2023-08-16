@@ -81,6 +81,15 @@ jobs:
             --push .
           echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" > frpc_image_tag.txt
 
+
+      - name: Upload FRPS Image Tag
+        id: upload_frps_image_tag
+        run: echo ${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }} > frps_image_tag.txt
+
+      - name: Upload FRPC Image Tag
+        id: upload_frpc_image_tag
+        run: echo ${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }} > frpc_image_tag.txt
+
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
         uses: actions/create-release@v1
@@ -89,14 +98,14 @@ jobs:
         with:
           tag_name: v${{ env.FRP_VERSION }}
           release_name: Release v${{ env.FRP_VERSION }}
-          files:
+          files: |
             - frps_image_tag.txt
             - frpc_image_tag.txt
           body: |
 
              ### Docker images  
-             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ env.FRPS_IMAGE_TAG }})  
-             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ env.FRPC_IMAGE_TAG }})  
+             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }})  
+             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }})    
 
              ### OS/Arch Support  
              - linux/amd64  
