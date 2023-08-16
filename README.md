@@ -53,7 +53,7 @@ bind_port = 7000
   
 # frpc
 **1.Deploy**  
-**Docker Run**  
+- **Docker Run**  
 ```
 docker run -d \
   --name frpc \
@@ -61,7 +61,7 @@ docker run -d \
   -v ~/frpc.ini:/app/frpc/frpc_config/frpc.ini \
   minsdatadocker/frpc:latest  
 ```
-**Docker-Compose**  
+- **Docker-Compose**  
 ```
 version: '3'
 services:
@@ -74,7 +74,7 @@ services:
 ```
 **2.Edit configuration file (frpc.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
-**Example**
+- **Example**
 ```
 # frpc.ini
 [common]
