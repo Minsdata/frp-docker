@@ -63,6 +63,12 @@ jobs:
             --push .
           echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
 
+      - name: Get latest fatedier/frp FRP release body
+        run: |
+          FRP_RELEASE=$(curl -s https://api.github.com/repos/fatedier/frp/releases | jq -r '.[0]')
+          FRP_BODY=$(echo "$FRP_RELEASE" | jq -r '.body')
+          echo "FRP_BODY=$FRP_BODY" >> $GITHUB_ENV
+
       - name: Create Release
         uses: actions/create-release@v1
         env:
@@ -75,16 +81,11 @@ jobs:
              As with any new version, there may be breaking changes. Make sure to backup
              your instance before upgrading to the latest release.
 
-             ## Changes
-             Here are the changes in this release:
+             ${{ env.FRP_BODY }}
 
              ### Docker images
              - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ env.FRPS_IMAGE_TAG }})
              - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ env.FRPC_IMAGE_TAG }})
-
-             ### Bug Fixes
-             - Fixed issue where XYZ feature was not working properly.
-             - Addressed security vulnerabilities in ABC component.
+             
      
-             Thank you for using our software! If you encounter any issues or need assistance,
-             feel free to reach out to our support team.
+             This Docker images were bulit from [fatedier/frp](https://github.com/fatedier/frp) latest relase automatically (100% oringal source code used).
