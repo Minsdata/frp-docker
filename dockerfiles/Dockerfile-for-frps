@@ -15,7 +15,7 @@ RUN apk update --no-cache \
     &&  apk add --no-cache curl bash \
     &&  cd \
     &&  wget --no-check-certificate -c https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
-    &&  tar zxvf frp_${FRP_VERSION}_${FRP_ARCH}.tar.gz \
+    &&  tar zxvf frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
     &&  cd frp_${FRP_VERSION}_${FRP_ARCH}/ \
     &&  mkdir -p /app/${FRPS_OR_FRPC} \
     &&  cp ${FRPS_OR_FRPC} /app/${FRPS_OR_FRPC} \
@@ -23,7 +23,7 @@ RUN apk update --no-cache \
     &&  cp ${FRPS_OR_FRPC}.ini /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config \
     &&  cp ${FRPS_OR_FRPC}_full.ini /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config \
     &&  cd \
-    &&  rm frp_${FRP_VERSION}_${FRP_ARCH}.tar.gz \
+    &&  rm frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
     &&  rm -rf frp_${FRP_VERSION}_${FRP_ARCH}/ 
 
 ENTRYPOINT /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC} -c /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config/${FRPS_OR_FRPC}.ini
