@@ -92,7 +92,7 @@ jobs:
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
-        uses: actions/create-release@v1
+        uses: actions/create-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
@@ -104,8 +104,8 @@ jobs:
           body: |
 
              ### Docker images  
-             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ steps.build_and_publish.outputs.FRPS_IMAGE_TAG }})  
-             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ steps.build_and_publish.outputs.FRPC_IMAGE_TAG }})    
+             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ steps.upload_frps_image_tag.outputs.FRPS_IMAGE_TAG }})
+             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ steps.upload_frpc_image_tag.outputs.FRPC_IMAGE_TAG }})   
 
              ### OS/Arch Support  
              - linux/amd64  
