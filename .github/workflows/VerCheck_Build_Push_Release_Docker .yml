@@ -16,6 +16,7 @@ on:
 env:
   PLATFORMS: "linux/amd64,linux/arm64,linux/386,linux/arm"
   IMAGE_NAME_PREFIX: "minsdatadocker"
+  DOCKER_CLI_EXPERIMENTAL: enabled
 
 jobs:
   build_and_publish:
@@ -64,26 +65,34 @@ jobs:
         if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-          
-          docker buildx build -f $DOCKERFILE \
-            --build-arg FRP_VERSION=$FRP_VERSION \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frps:latest \
-            --push .
+         
+          for arch in $PLATFORMS; do
+            arch=$(echo $arch | sed 's/linux\///')
+            echo "Building for architecture: $arch"
+            docker buildx build -f $DOCKERFILE \
+              --build-arg FRP_VERSION=$FRP_VERSION \
+              --build-arg FRP_ARCH=$arch \
+              -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+              -t $IMAGE_NAME_PREFIX/frps:latest \
+              --push .
+          done
 
       - name: Build and Push FRPC Docker image
         if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
           
-          docker buildx build -f $DOCKERFILE \
-            --build-arg FRP_VERSION=$FRP_VERSION \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frpc:latest \
-            --push .
-
+          for arch in $PLATFORMS; do
+            arch=$(echo $arch | sed 's/linux\///')
+            echo "Building for architecture: $arch"
+            docker buildx build -f $DOCKERFILE \
+              --build-arg FRP_VERSION=$FRP_VERSION \
+              --build-arg FRP_ARCH=$arch \
+              -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
+              -t $IMAGE_NAME_PREFIX/frpc:latest \
+              --push .
+          done
+            
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
         uses: actions/create-release@v1
