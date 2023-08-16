@@ -64,7 +64,7 @@ jobs:
           echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Create Release
-        uses: actions/create-release@v2
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
