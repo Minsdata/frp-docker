@@ -1,4 +1,4 @@
-name: VerCheck Build Push Docker Images to Dockerhub
+name: release test
 
 #on:
 #  schedule:
@@ -49,36 +49,25 @@ jobs:
           FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name | cut -c 2-)
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
-      - name: Compress Docker Images
+      - name: Create Release and Set Content
+        if: env.SKIP_BUILD != 'true'  # Only create release if build is not skipped
         run: |
-          IMAGE_NAME_PREFIX="minsdatadocker"
-          mkdir -p compressed_images
-          for frp_arch in $FRP_ARCHS; do
-            image_tag=$FRP_VERSION
-            image_name="${IMAGE_NAME_PREFIX}/frps:${image_tag}"
-            new_image_name="${image_name}_${frp_arch}_v${image_tag}.gz"
-            docker save $image_name | gzip > compressed_images/$new_image_name
-          done
-
-      - name: Zip Compressed Images
-        run: |
-          mv compressed_images/* frp-archives/
-          zip -r frp-archives.zip frp-archives
-
-      - name: Upload GZ Archives as Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: gz-archives
-          path: ./frp-archives.zip
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ env.FRP_VERSION }}-${{ github.run_id }}
-          release_name: Release v${{ env.FRP_VERSION }}
-          body: Release notes for v${{ env.FRP_VERSION }}  
-          draft: false
-          prerelease: false
+          # Create a release using GitHub API
+          RELEASE_JSON=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -d '{"tag_name": "v'$FRP_VERSION'", "name": "Release v'$FRP_VERSION'", "body": "", "draft": false, "prerelease": false}' \
+              "https://api.github.com/repos/owner/repo/releases")
+          
+          # Extract the release ID from the response
+          RELEASE_ID=$(echo $RELEASE_JSON | jq -r .id)
+          
+          # Fetch content from the frp repository and set as release body
+          RELEASE_CONTENT=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .body)
+          RELEASE_CONTENT=${RELEASE_CONTENT//\"/\\\"}  # Escape double quotes
+          
+          # Update the release with the fetched content
+          curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -d '{"body": "'"$RELEASE_CONTENT"'"}' \
+              "https://api.github.com/repos/owner/repo/releases/$RELEASE_ID"
+        shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.REALSE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REALSE }}
