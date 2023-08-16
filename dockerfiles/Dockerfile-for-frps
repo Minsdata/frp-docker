@@ -1,8 +1,6 @@
 FROM alpine:latest
 
 LABEL maintainer="Minsdata"
-LABEL architectures="x86-64,arm64,s390x,386,arm,ppc64le"
-LABEL description="Docker image for frpc make from fatedier/frp latest relase."
 
 ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
