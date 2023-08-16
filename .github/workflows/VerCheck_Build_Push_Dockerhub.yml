@@ -71,7 +71,6 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest \
             --push .
-          echo "FRPS_IMAGE_TAG=$IMAGE_NAME_PREFIX/frps:v$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Build and Push FRPC Docker image
         if: env.SKIP_BUILD != 'true'
@@ -84,7 +83,6 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frpc:latest \
             --push .
-          echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
@@ -97,8 +95,8 @@ jobs:
           body: |
 
              ### Docker images  
-             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ env.FRPS_IMAGE_TAG }})  
-             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ env.FRPC_IMAGE_TAG }})  
+             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](https://hub.docker.com/r/minsdatadocker/frps)  
+             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](https://hub.docker.com/r/minsdatadocker/frpc)  
 
              ### OS/Arch Support  
              - linux/amd64  
