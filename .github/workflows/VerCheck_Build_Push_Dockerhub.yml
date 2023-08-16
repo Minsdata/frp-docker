@@ -1,4 +1,4 @@
-name: Build, Push Docker Images to Dockerhub
+name: VerCheck Build Push Docker Images to Dockerhub
 
 on:
   schedule:
