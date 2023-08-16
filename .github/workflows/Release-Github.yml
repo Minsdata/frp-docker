@@ -1,8 +1,5 @@
 name: Release Test
 
-#on:
-#  schedule:
-#    - cron: "0 */4 * * *"
 on:
   workflow_dispatch:
     inputs:
@@ -16,18 +13,13 @@ env:
   IMAGE_NAME_PREFIX: "minsdatadocker"
 
 jobs:
-  build_and_publish:
-    name: Build and Publish Images
+  create_release:
+    name: Create Release
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-
-      - name: Get latest Docker Hub version
-        run: |
-          DOCKERHUB_VERSION=$(curl -s https://hub.docker.com/v2/repositories/${IMAGE_NAME_PREFIX}/frps/tags/ | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1 | awk -F 'v' '{print $2}')
-          echo "DOCKERHUB_VERSION=$DOCKERHUB_VERSION" >> $GITHUB_ENV
 
       - name: Get FRP Version
         run: |
@@ -35,38 +27,12 @@ jobs:
           FRP_VERSION=${FRP_VERSION#v}
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
-      - name: Compare versions and skip if same
-        run: |
-          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
-            echo "Versions are the same. Skipping build and publish."
-            echo "SKIP_BUILD=true" >> $GITHUB_ENV
-          fi
-        shell: bash
-
-      - name: Get latest FRP version
-        id: get_version
-        run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name | cut -c 2-)
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
-
-      - name: Create Release and Set Content
-        run: |
-          # Create a release using GitHub API
-          RELEASE_JSON=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d '{"tag_name": "v'$FRP_VERSION'", "name": "Release v'$FRP_VERSION'", "body": "", "draft": false, "prerelease": false}' \
-              "https://api.github.com/repos/owner/repo/releases")
-          
-          # Extract the release ID from the response
-          RELEASE_ID=$(echo $RELEASE_JSON | jq -r .id)
-          
-          # Fetch content from the frp repository and set as release body
-          RELEASE_CONTENT=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .body)
-          RELEASE_CONTENT=${RELEASE_CONTENT//\"/\\\"}  # Escape double quotes
-          
-          # Update the release with the fetched content
-          curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d '{"body": "'"$RELEASE_CONTENT"'"}' \
-              "https://api.github.com/repos/owner/repo/releases/$RELEASE_ID"
-        shell: bash
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.REALSE }}
+        with:
+          tag_name: v$FRP_VERSION
+          release_name: Release $FRP_VERSION
+          body: 这是一个自定义的 release 正文内容。
