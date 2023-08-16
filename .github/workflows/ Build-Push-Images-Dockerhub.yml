@@ -43,25 +43,29 @@ jobs:
 
       - name: Compare versions and skip if same
         run: |
-          if [[ "$FRP_VERSION" != "$DOCKERHUB_VERSION" ]]; then
+          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
             echo "Versions are the same. Skipping build and publish."
-            return 0
+            echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
         shell: bash
 
       - name: Set up QEMU
+        if: env.SKIP_BUILD != 'true'
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
+        if: env.SKIP_BUILD != 'true'
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
+        if: env.SKIP_BUILD != 'true'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and Push FRPS Docker image
+        if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
           
@@ -73,6 +77,7 @@ jobs:
             --push .
 
       - name: Build and Push FRPC Docker image
+        if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
           
