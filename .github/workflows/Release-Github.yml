@@ -65,8 +65,7 @@ jobs:
 
       - name: Get latest fatedier/frp FRP release body
         run: |
-          FRP_RELEASE=$(curl -s https://api.github.com/repos/fatedier/frp/releases | jq -r '.[0]')
-          FRP_BODY=$(echo "$FRP_RELEASE" | jq -r '.body')
+          FRP_BODY=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.body')
           echo "FRP_BODY=$FRP_BODY" >> $GITHUB_ENV
 
       - name: Create Release
