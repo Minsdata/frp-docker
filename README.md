@@ -23,7 +23,7 @@ linux/s390x
 
 # frps 
 **1.Deploy**  
-**Docker Run**  
+- **Docker Run**  
 ```
 docker run -d \
   --name frps \
@@ -31,7 +31,7 @@ docker run -d \
   -v ~/frps.ini:/app/frps/frps_config/frps.ini \
   minsdatadocker/frps:latest  
 ```
-**Docker-Compose**  
+- **Docker-Compose**  
 ```
 version: '3'
 services:
@@ -44,7 +44,7 @@ services:
 ```
 **2.Edit configuration file (frps.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
-**Example**
+- **Example**
 ```
 # frps.ini
 [common]
