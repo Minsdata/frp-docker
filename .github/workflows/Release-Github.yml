@@ -66,7 +66,7 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest \
             --push .
-          echo "FRPS_IMAGE_TAG=$IMAGE_NAME_PREFIX/frps:v$FRP_VERSION" >> $GITHUB_ENV
+          echo "FRPS_IMAGE_TAG=$IMAGE_NAME_PREFIX/frps:v$FRP_VERSION" > frps_image_tag.txt
 
       - name: Build and Push FRPC Docker image
         if: env.SKIP_BUILD != 'true'
@@ -79,7 +79,7 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frpc:latest \
             --push .
-          echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
+          echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" > frpc_image_tag.txt
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
@@ -89,6 +89,9 @@ jobs:
         with:
           tag_name: v${{ env.FRP_VERSION }}
           release_name: Release v${{ env.FRP_VERSION }}
+          files:
+            - frps_image_tag.txt
+            - frpc_image_tag.txt
           body: |
 
              ### Docker images  
