@@ -16,12 +16,9 @@ env:
   IMAGE_NAME_PREFIX: "minsdatadocker"
 
 jobs:
-  build_and_publish:
-    name: Build and Publish Images
+  check_and_build:
+    name: Check Version and Build Images
     runs-on: ubuntu-latest
-
-    if: |
-      steps.get_dockerhub_version.outputs.DOCKERHUB_VERSION != steps.get_version.outputs.FRP_VERSION
 
     steps:
       - name: Check out repository
@@ -40,9 +37,24 @@ jobs:
           FRP_VERSION=${FRP_VERSION#v}
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
-      - name: Output FRP_VERSION
+      - name: Compare versions and set SKIP_BUILD
+        id: compare_versions
         run: |
-          echo "FRP_VERSION: $FRP_VERSION"
+          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
+            echo "Versions are the same. Skipping build and publish."
+            echo "SKIP_BUILD=true" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+  build_and_publish:
+    name: Build and Publish Images
+    needs: check_and_build
+    runs-on: ubuntu-latest
+    if: needs.check_and_build.outputs.SKIP_BUILD != 'true'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
