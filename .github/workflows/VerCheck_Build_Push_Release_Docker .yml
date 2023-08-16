@@ -4,7 +4,7 @@ name: VerCheck Build Push Release Docker
 #  schedule:
 #    - cron: "0 */4 * * *"
 
-test mode
+#test mode
 on:
   workflow_dispatch:
     inputs:
