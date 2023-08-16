@@ -33,6 +33,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
-          tag_name: ${{ env.FRP_VERSION }}
-          release_name: Release ${{ env.FRP_VERSION }}
-          body: 这是一个自定义的 release 正文内容。
+          tag_name: v${{ env.FRP_VERSION }}
+          release_name: Release v${{ env.FRP_VERSION }}
+          body: |
+             ## Important: Back up your entire instance before using this new version!
+             As with any new version, there may be breaking changes. Make sure to backup
+             your instance before upgrading to the latest release.
+
+             ## Changes
+             Here are the changes in this release:
+
+             ### Docker images
+             - Improved performance of Docker images.
+             - Updated base image to XYZ version.
+
+             ### Bug Fixes
+             - Fixed issue where XYZ feature was not working properly.
+             - Addressed security vulnerabilities in ABC component.
+
+             ### Enhancements
+             - Added new feature to improve user experience.
+             - Enhanced compatibility with XYZ platform.
+
+             ## How to Upgrade
+             Follow these steps to upgrade to the latest version:
+             1. Backup your current instance.
+             2. Download the latest release from [here](https://github.com/NginxProxyManager/nginx-proxy-manager/releases/latest).
+             3. Follow the upgrade instructions provided in the documentation.
+     
+             Thank you for using our software! If you encounter any issues or need assistance,
+             feel free to reach out to our support team.
