@@ -1,4 +1,4 @@
-name: release test
+name: Release Test
 
 #on:
 #  schedule:
@@ -50,7 +50,6 @@ jobs:
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
       - name: Create Release and Set Content
-        if: env.SKIP_BUILD != 'true'  # Only create release if build is not skipped
         run: |
           # Create a release using GitHub API
           RELEASE_JSON=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
