@@ -84,7 +84,7 @@ jobs:
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
           
-          for arch in $PLATFORMS; do
+          for arch in $(echo $PLATFORMS | tr ',' '\n'); do
             FRP_ARCH=$(echo $arch | sed 's/linux\///')
             echo "Building for architecture: $FRP_ARCH"
             FRP_ARCH=${FRP_ARCH}
