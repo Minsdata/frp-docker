@@ -31,7 +31,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.REALSE }}
+          GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
           tag_name: v$FRP_VERSION
           release_name: Release $FRP_VERSION
