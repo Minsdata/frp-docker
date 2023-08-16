@@ -67,11 +67,13 @@ jobs:
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
          
           for arch in $PLATFORMS; do
-            arch=$(echo $arch | sed 's/linux\///')
-            echo "Building for architecture: $arch"
+            FRP_ARCH=$(echo $arch | sed 's/linux\///')
+            echo "Building for architecture: $FRP_ARCH"
+            FRP_ARCH=${FRP_ARCH}
+            echo "FRP_ARCH=$FRP_ARCH" >> $GITHUB_ENV
             docker buildx build -f $DOCKERFILE \
               --build-arg FRP_VERSION=$FRP_VERSION \
-              --build-arg FRP_ARCH=$arch \
+              --build-arg FRP_ARCH=$FRP_ARCH \
               -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
               -t $IMAGE_NAME_PREFIX/frps:latest \
               --push .
