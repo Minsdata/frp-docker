@@ -103,8 +103,7 @@ jobs:
          # files: |
          #  - frps_image_tag.txt
          #  - frpc_image_tag.txt
-          body: |
-
+          body: >
              ### Docker images  
              - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ steps.upload_frps_image_tag.outputs.FRPS_IMAGE_TAG }})
              - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ steps.upload_frpc_image_tag.outputs.FRPC_IMAGE_TAG }})   
