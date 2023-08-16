@@ -14,7 +14,7 @@ RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
     &&  apk add --no-cache curl bash \
     &&  cd \
-    &&  wget --no-check-certificate -c https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_${FRP_ARCH}.tar.gz \
+    &&  wget --no-check-certificate -c https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux__${FRP_ARCH}.tar.gz \
     &&  tar zxvf frp_${FRP_VERSION}_${FRP_ARCH}.tar.gz \
     &&  cd frp_${FRP_VERSION}_${FRP_ARCH}/ \
     &&  mkdir -p /app/${FRPS_OR_FRPC} \
