@@ -27,9 +27,44 @@ jobs:
           FRP_VERSION=${FRP_VERSION#v}
           echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Push FRPS Docker image
+        run: |
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
+          
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frps:latest \
+            --push .
+          echo "FRPS_IMAGE_TAG=$IMAGE_NAME_PREFIX/frps:v$FRP_VERSION" >> $GITHUB_ENV
+
+      - name: Build and Push FRPC Docker image
+        run: |
+          DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
+          
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frpc:latest \
+            --push .
+          echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
+
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.MINSDATA_GITHUB }}
         with:
@@ -44,22 +79,12 @@ jobs:
              Here are the changes in this release:
 
              ### Docker images
-             - Improved performance of Docker images.
-             - Updated base image to XYZ version.
+             - Docker image for FRPS: [${{ env.IMAGE_NAME_PREFIX }}/frps:v${{ env.FRP_VERSION }}](${{ env.FRPS_IMAGE_TAG }})
+             - Docker image for FRPC: [${{ env.IMAGE_NAME_PREFIX }}/frpc:v${{ env.FRP_VERSION }}](${{ env.FRPC_IMAGE_TAG }})
 
              ### Bug Fixes
              - Fixed issue where XYZ feature was not working properly.
              - Addressed security vulnerabilities in ABC component.
-
-             ### Enhancements
-             - Added new feature to improve user experience.
-             - Enhanced compatibility with XYZ platform.
-
-             ## How to Upgrade
-             Follow these steps to upgrade to the latest version:
-             1. Backup your current instance.
-             2. Download the latest release from [here](https://github.com/NginxProxyManager/nginx-proxy-manager/releases/latest).
-             3. Follow the upgrade instructions provided in the documentation.
      
              Thank you for using our software! If you encounter any issues or need assistance,
              feel free to reach out to our support team.
