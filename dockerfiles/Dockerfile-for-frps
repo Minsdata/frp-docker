@@ -2,12 +2,12 @@ FROM alpine:latest
 
 LABEL maintainer="Minsdata"
 LABEL architectures="x86-64,arm64,s390x,386,arm,ppc64le"
+LABEL description="Docker image for frpc make from fatedier/frp latest relase."
 
 ARG FRP_VERSION
 ENV FRP_VERSION=${FRP_VERSION}
 ENV FRP_ARCH linux_amd64
 ENV FRPS_OR_FRPC frps
-LABEL description="Docker image for frps (Version: $FRP_VERSION) make from fatedier/frp latest relase."
 
 RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
