@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Set up QEMU
-        if: env.SKIP_BUILD == 'true'
+        if: env.SKIP_BUILD != 'true'
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
