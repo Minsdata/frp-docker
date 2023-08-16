@@ -13,7 +13,6 @@ ENV FRPS_OR_FRPC frps
 RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
     &&  apk add --no-cache curl bash \
-    &&  cd \
-    &&  wget --no-check-certificate -c https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
-    &&  tar zxvf frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz /
+    &&  cd /
+
 
