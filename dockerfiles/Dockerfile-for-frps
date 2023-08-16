@@ -5,6 +5,7 @@ LABEL architectures="x86-64,arm64,386,arm"
 LABEL description="Docker image for frpc make from fatedier/frp latest relase."
 
 ARG FRP_VERSION
+ARG FRP_ARCH
 ENV FRP_VERSION=${FRP_VERSION}
 ENV FRP_ARCH=${FRP_ARCH}
 ENV FRPS_OR_FRPC frps
