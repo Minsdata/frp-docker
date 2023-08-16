@@ -14,7 +14,6 @@ on:
         default: 'test the action'
 
 env:
-  PLATFORMS: "linux/amd64,linux/arm64,linux/386,linux/arm"
   IMAGE_NAME_PREFIX: "minsdatadocker"
   DOCKER_CLI_EXPERIMENTAL: enabled
 
@@ -22,6 +21,9 @@ jobs:
   build_and_publish:
     name: Build and Publish Images
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: ["linux/amd64", "linux/arm64", "linux/386", "linux/arm"]
 
     steps:
       - name: Check out repository
@@ -65,19 +67,14 @@ jobs:
         if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-         
-          for arch in $(echo $PLATFORMS | tr ',' '\n'); do
-            FRP_ARCH=$(echo $arch | sed 's/linux\///')
-            echo "Building for architecture: $FRP_ARCH"
-            FRP_ARCH=${FRP_ARCH}
-            echo "FRP_ARCH=$FRP_ARCH" >> $GITHUB_ENV
-            docker buildx build -f $DOCKERFILE \
-              --build-arg FRP_VERSION=$FRP_VERSION \
-              --build-arg FRP_ARCH=$FRP_ARCH \
-              -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
-              -t $IMAGE_NAME_PREFIX/frps:latest \
-              --push .
-          done
+          FRP_ARCH=$(echo ${{ matrix.platform }} | sed 's/linux\///')
+          echo "Building for architecture: $FRP_ARCH"
+          docker buildx build -f $DOCKERFILE \
+            --build-arg FRP_VERSION=$FRP_VERSION \
+            --build-arg FRP_ARCH=$FRP_ARCH \
+            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frps:latest \
+            --push .
 
       - name: Build and Push FRPC Docker image
         if: env.SKIP_BUILD != 'true'
