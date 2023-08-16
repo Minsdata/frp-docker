@@ -63,11 +63,6 @@ jobs:
             --push .
           echo "FRPC_IMAGE_TAG=$IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION" >> $GITHUB_ENV
 
-      - name: Get latest fatedier/frp FRP release body
-        run: |
-          FRP_BODY=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.body')
-          echo "FRP_BODY=$FRP_BODY" >> $GITHUB_ENV
-
       - name: Create Release
         uses: actions/create-release@v1
         env:
