@@ -1,15 +1,15 @@
 name: Build, Push Docker Images to Dockerhub
 
-on:
-  schedule:
-    - cron: "0 */6 * * *"
 #on:
-#  workflow_dispatch:
-#    inputs:
-#      tag:
-#        description: 'Image tag'
-#        required: true
-#        default: 'test the action'
+#  schedule:
+#    - cron: "0 */4 * * *"
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test the action'
 
 env:
   PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v8,linux/arm/v7,linux/arm/v6"
@@ -24,6 +24,31 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Get latest Docker Hub version
+        id: get_dockerhub_version
+        run: |
+          DOCKERHUB_VERSION=$(curl -s https://hub.docker.com/v2/repositories/${IMAGE_NAME_PREFIX}/frps/tags/ | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1 | awk -F 'v' '{print $2}')
+          echo "DOCKERHUB_VERSION=$DOCKERHUB_VERSION" >> $GITHUB_ENV
+
+      - name: Get FRP Version
+        id: get_version
+        run: |
+          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
+          FRP_VERSION=${FRP_VERSION#v}
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+
+      - name: Compare versions and skip if same
+        run: |
+          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
+            echo "Versions are the same. Skipping build and publish."
+            exit 0
+          fi
+        shell: bash
+        
+      - name: Output FRP_VERSION
+        run: |
+          echo "FRP_VERSION: $FRP_VERSION"
+     
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -36,17 +61,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Get FRP Version
-        id: get_version
-        run: |
-          FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
-          FRP_VERSION=${FRP_VERSION#v}
-          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
-      
-      - name: Output FRP_VERSION
-        run: |
-          echo "FRP_VERSION: $FRP_VERSION"
-          
       - name: Build and Push FRPS Docker image
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
