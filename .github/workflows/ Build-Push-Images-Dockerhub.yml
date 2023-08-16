@@ -2,7 +2,7 @@ name: Build, Push Docker Images to Dockerhub
 
 #on:
 #  schedule:
-#    - cron: "0 */4 * * *"
+#    - cron: "0 */6 * * *"
 on:
   workflow_dispatch:
     inputs:
@@ -16,8 +16,8 @@ env:
   IMAGE_NAME_PREFIX: "minsdatadocker"
 
 jobs:
-  check_and_build:
-    name: Check Version and Build Images
+  build_and_publish:
+    name: Build and Publish Images
     runs-on: ubuntu-latest
 
     steps:
@@ -28,58 +28,39 @@ jobs:
         id: get_dockerhub_version
         run: |
           DOCKERHUB_VERSION=$(curl -s https://hub.docker.com/v2/repositories/${IMAGE_NAME_PREFIX}/frps/tags/ | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1 | awk -F 'v' '{print $2}')
-          echo "$DOCKERHUB_VERSION" > dockerhub_version.txt
+          echo "DOCKERHUB_VERSION=$DOCKERHUB_VERSION" >> $GITHUB_ENV
 
       - name: Get FRP Version
         id: get_version
         run: |
           FRP_VERSION=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r .tag_name)
           FRP_VERSION=${FRP_VERSION#v}
-          echo "$FRP_VERSION" > frp_version.txt
+          echo "FRP_VERSION=$FRP_VERSION" >> $GITHUB_ENV
+      
+      - name: Output FRP_VERSION
+        run: |
+          echo "FRP_VERSION: $FRP_VERSION"
 
-      - name: Compare versions and set SKIP_BUILD
-        id: compare_versions
+      - name: Compare versions and skip if same
         run: |
           if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
-            echo "true" > skip_build.txt
-          else
-            echo "false" > skip_build.txt
+            echo "Versions are the same. Skipping build and publish."
+            return 0
           fi
         shell: bash
-
-  build_and_publish:
-    name: Build and Publish Images
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Read SKIP_BUILD status
-        id: read_skip_build
-        run: |
-          SKIP_BUILD=$(cat skip_build.txt)
-          echo "SKIP_BUILD=$SKIP_BUILD" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        if: env.SKIP_BUILD != 'true'
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        if: env.SKIP_BUILD != 'true'
 
-      - name: Output FRP_VERSION
-        run: |
-          echo "FRP_VERSION: $FRP_VERSION"
-        if: env.SKIP_BUILD != 'true'
-          
       - name: Build and Push FRPS Docker image
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
@@ -90,8 +71,7 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest \
             --push .
-        if: env.SKIP_BUILD != 'true'
-          
+
       - name: Build and Push FRPC Docker image
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
@@ -102,4 +82,3 @@ jobs:
             -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frpc:latest \
             --push .
-        if: env.SKIP_BUILD != 'true'
