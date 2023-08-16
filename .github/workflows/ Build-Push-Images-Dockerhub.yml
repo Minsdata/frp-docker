@@ -43,7 +43,7 @@ jobs:
 
       - name: Compare versions and skip if same
         run: |
-          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
+          if [[ "$FRP_VERSION" != "$DOCKERHUB_VERSION" ]]; then
             echo "Versions are the same. Skipping build and publish."
             return 0
           fi
