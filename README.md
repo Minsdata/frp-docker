@@ -27,7 +27,7 @@ linux/s390x
 docker run -d \
   --name frps \
   --restart unless-stopped \
-  -v ~/frps.ini:/app/frps/frps_config/frps.ini \
+  -v ~/frps.ini:/app/frps/frps.ini \
   minsdatadocker/frps:latest  
 ```
 - **Docker-Compose**  
@@ -39,7 +39,7 @@ services:
     container_name: frps
     restart: unless-stopped
     volumes:
-      - ~/frps.ini:/app/frps/frps_config/frps.ini
+      - ~/frps.ini:/app/frps/frps.ini
 ```
 **2.Edit configuration file (frps.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
@@ -47,7 +47,9 @@ services:
 ```
 # frps.ini
 [common]
+server_addr = 0.0.0.0
 bind_port = 7000
+token = YOURTOKEN
 ```  
   
 # frpc
@@ -57,7 +59,7 @@ bind_port = 7000
 docker run -d \
   --name frpc \
   --restart unless-stopped \
-  -v ~/frpc.ini:/app/frpc/frpc_config/frpc.ini \
+  -v ~/frpc.ini:/app/frpc/frpc.ini \
   minsdatadocker/frpc:latest  
 ```
 - **Docker-Compose**  
@@ -69,7 +71,7 @@ services:
     container_name: frpc
     restart: unless-stopped
     volumes:
-      - ~/frpc.ini:/app/frpc/frpc_config/frpc.ini
+      - ~/frpc.ini:/app/frpc/frpc.ini
 ```
 **2.Edit configuration file (frpc.ini),**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
@@ -77,8 +79,10 @@ services:
 ```
 # frpc.ini
 [common]
-server_addr = x.x.x.x
+server_addr = 127.0.0.1
 server_port = 7000
+token = YOURTOKEN
+
 
 [ssh]
 type = tcp
