@@ -14,16 +14,13 @@ on:
         default: 'test the action'
 
 env:
+  PLATFORMS: "linux/amd64,linux/arm64,linux/386,linux/arm"
   IMAGE_NAME_PREFIX: "minsdatadocker"
-  DOCKER_CLI_EXPERIMENTAL: enabled
 
 jobs:
   build_and_publish:
     name: Build and Publish Images
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: ["linux/amd64", "linux/arm64", "linux/386", "linux/arm"]
 
     steps:
       - name: Check out repository
@@ -67,11 +64,9 @@ jobs:
         if: env.SKIP_BUILD != 'true'
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-          FRP_ARCH=$(echo ${{ matrix.platform }} | sed 's/linux\///')
-          echo "Building for architecture: $FRP_ARCH"
+          
           docker buildx build -f $DOCKERFILE \
-            --build-arg FRP_VERSION=$FRP_VERSION \
-            --build-arg FRP_ARCH=$FRP_ARCH \
+            --platform $PLATFORMS \
             -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
             -t $IMAGE_NAME_PREFIX/frps:latest \
             --push .
@@ -81,19 +76,12 @@ jobs:
         run: |
           DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
           
-          for arch in $(echo $PLATFORMS | tr ',' '\n'); do
-            FRP_ARCH=$(echo $arch | sed 's/linux\///')
-            echo "Building for architecture: $FRP_ARCH"
-            FRP_ARCH=${FRP_ARCH}
-            echo "FRP_ARCH=$FRP_ARCH" >> $GITHUB_ENV
-            docker buildx build -f $DOCKERFILE \
-              --build-arg FRP_VERSION=$FRP_VERSION \
-              --build-arg FRP_ARCH=$FRP_ARCH \
-              -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
-              -t $IMAGE_NAME_PREFIX/frpc:latest \
-              --push .
-          done
-            
+          docker buildx build -f $DOCKERFILE \
+            --platform $PLATFORMS \
+            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
+            -t $IMAGE_NAME_PREFIX/frpc:latest \
+            --push .
+
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
         uses: actions/create-release@v1
@@ -113,9 +101,8 @@ jobs:
              - linux/arm64  
              - linux/arm/v6  
              - linux/arm/v7  
-             - linux/arm/v8  
-             - linux/386  
+             - linux/arm/v8
              - linux/ppc64le  
              - linux/s390x  
      
-             This Docker images are bulit from [fatedier/frp](https://github.com/fatedier/frp) latest relase automatically (100% oringal source code used).
+             This Docker images are bulit from [fatedier/frp](https://github.com/fatedier/frp)  oringal source code latest relase automatically.
