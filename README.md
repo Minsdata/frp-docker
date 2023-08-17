@@ -47,7 +47,7 @@ services:
 ```
 # frps.ini
 [common]
-server_addr = 0.0.0.0
+bind_addr = 0.0.0.0
 bind_port = 7000
 token = YOURTOKEN
 ```  
