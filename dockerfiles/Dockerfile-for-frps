@@ -1,30 +1,30 @@
+FROM golang:1.21 AS building
+
+RUN apt-get update \
+    && apt-get install -y git wget
+
+RUN git clone https://github.com/fatedier/frp.git /building
+
+RUN mkdir -p /building/new-conf \
+    && wget -O /building/new-conf/frps.ini https://raw.githubusercontent.com/Minsdata/frp-docker/main/conf/frps.ini \
+    && wget -O /building/new-conf/frps_full.ini https://raw.githubusercontent.com/Minsdata/frp-docker/main/conf/frps_full.ini
+
+
+WORKDIR /building
+
+RUN make frps
+
+
 FROM alpine:latest
-
-LABEL maintainer="Minsdata"
-LABEL architectures="x86-64,arm64,386,arm"
-LABEL description="Docker image for frpc make from fatedier/frp latest relase."
-
-ARG FRP_VERSION
-ARG FRP_ARCH
-ENV FRP_VERSION=${FRP_VERSION}
-ENV FRP_ARCH=${FRP_ARCH}
-ENV FRPS_OR_FRPC frps
 
 RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
-    &&  apk add --no-cache curl bash \
-    &&  cd \
-    &&  wget --no-check-certificate -c https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
-    &&  tar zxvf frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
-    &&  cd frp_${FRP_VERSION}_linux_${FRP_ARCH}/ \
-    &&  mkdir -p /app/${FRPS_OR_FRPC} \
-    &&  cp ${FRPS_OR_FRPC} /app/${FRPS_OR_FRPC} \
-    &&  mkdir -p /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config \
-    &&  cp ${FRPS_OR_FRPC}.ini /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config \
-    &&  cp ${FRPS_OR_FRPC}_full.ini /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config \
-    &&  cd \
-    &&  rm frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz \
-    &&  rm -rf frp_${FRP_VERSION}_linux_${FRP_ARCH}/ 
+    &&  apk add --no-cache curl bash
 
-ENTRYPOINT /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC} -c /app/${FRPS_OR_FRPC}/${FRPS_OR_FRPC}_config/${FRPS_OR_FRPC}.ini
+RUN mkdir -p /frps
 
+COPY --from=building /building/bin/frps /usr/bin/frps
+COPY --from=building /building/new-conf/frps.ini /frps/frps.ini
+COPY --from=building /building/new-conf/frps_full.ini /frps/frps_full.ini
+
+ENTRYPOINT ["/usr/bin/frps -c /frpc/frps.ini"]                                           
