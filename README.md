@@ -79,14 +79,14 @@ services:
 ```
 # frpc.ini
 [common]
-server_addr = 127.0.0.1
+server_addr = 172.17.0.1
 server_port = 7000
 token = YOURTOKEN
 
 
 [ssh]
 type = tcp
-local_ip = 127.0.0.1
+local_ip = 172.17.0.1
 local_port = 22
 remote_port = 6000
 ```
