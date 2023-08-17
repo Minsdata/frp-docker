@@ -27,4 +27,4 @@ COPY --from=building /building/bin/frps /usr/bin/frps
 COPY --from=building /building/new-conf/frps.ini /frps/frps.ini
 COPY --from=building /building/new-conf/frps_full.ini /frps/frps_full.ini
 
-ENTRYPOINT ["/usr/bin/frps -c /frpc/frps.ini"]                                           
+ENTRYPOINT ["/usr/bin/frps -c /frps/frps.ini"]                                           
