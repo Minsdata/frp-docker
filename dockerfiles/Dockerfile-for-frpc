@@ -21,10 +21,14 @@ RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
     &&  apk add --no-cache curl bash
 
-RUN mkdir -p /frpc
+RUN mkdir -p /app/frpc
 
 COPY --from=building /building/bin/frpc /usr/bin/frpc
-COPY --from=building /building/new-conf/frpc.ini /frpc/frpc.ini
-COPY --from=building /building/new-conf/frpc_full.ini /frpc/frpc_full.ini
+COPY --from=building /building/new-conf/frpc.ini /app/frpc/frpc.ini
+COPY --from=building /building/new-conf/frpc_full.ini /app/frpc/frpc_full.ini
 
-ENTRYPOINT ["/usr/bin/frpc -c /frpc/frpc.ini"]
+WORKDIR /app
+
+ENTRYPOINT ["/usr/bin/frpc"]
+
+CMD ["-c", "/app/frpc/frpc.ini"]
