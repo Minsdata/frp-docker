@@ -1,17 +1,17 @@
 name: VerCheck Build Push Release Docker 
-#test mode
-#on:
-#  schedule:
-#    - cron: "0 */4 * * *"
+#normal mode
+on:
+  schedule:
+    - cron: "0 */6 * * *"
 
 #test mode
-on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Image tag'
-        required: true
-        default: 'test the action'
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      tag:
+#        description: 'Image tag'
+#        required: true
+#        default: 'test the action'
 
 env:
   PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6"
@@ -39,7 +39,7 @@ jobs:
 
       - name: Compare versions and skip if same
         run: |
-          if [[ "$FRP_VERSION" != "$DOCKERHUB_VERSION" ]]; then
+          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
             echo "Versions are the same. Skipping build and publish."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
