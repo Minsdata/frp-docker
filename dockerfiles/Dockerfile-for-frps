@@ -21,10 +21,14 @@ RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
     &&  apk add --no-cache curl bash
 
-RUN mkdir -p /frps
+RUN mkdir -p /app/frps
 
 COPY --from=building /building/bin/frps /usr/bin/frps
-COPY --from=building /building/new-conf/frps.ini /frps/frps.ini
-COPY --from=building /building/new-conf/frps_full.ini /frps/frps_full.ini
+COPY --from=building /building/new-conf/frps.ini /app/frps/frps.ini
+COPY --from=building /building/new-conf/frps_full.ini /app/frps/frps_full.ini
 
-ENTRYPOINT ["/usr/bin/frps -c /frps/frps.ini"]                                           
+WORKDIR /app
+
+ENTRYPOINT ["/usr/bin/frps"]
+
+CMD ["-c", "/app/frps/frps.ini"]
