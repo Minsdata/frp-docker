@@ -1,24 +1,30 @@
 FROM golang:1.21 AS building
 
 RUN apt-get update \
-    && apt-get install -y git
+    && apt-get install -y git wget
 
 RUN git clone https://github.com/fatedier/frp.git /building
+
+RUN mkdir -p /building/new-conf \
+    && wget -O /building/new-conf/frpc.ini https://raw.githubusercontent.com/Minsdata/frp-docker/main/conf/frpc.ini \
+    && wget -O /building/new-conf/frpc_full.ini https://raw.githubusercontent.com/Minsdata/frp-docker/main/conf/frpc_full.ini
+
 
 WORKDIR /building
 
 RUN make frpc
 
+
 FROM alpine:latest
 
 RUN apk update --no-cache \
     &&  apk upgrade --no-cache \
-    &&  apk add --no-cache curl bash wget
+    &&  apk add --no-cache curl bash
 
-RUN wget -O /frpc/frpc.ini https://github.com/Minsdata/frp-docker/blob/main/conf/frpc.ini \
-    && wget -O /frpc/frpc_full.ini https://github.com/Minsdata/frp-docker/blob/main/conf/frpc_full.ini
+RUN mkdir -p /frpc
 
 COPY --from=building /building/bin/frpc /usr/bin/frpc
-
+COPY --from=building /building/new-conf/frpc.ini /frpc/frpc.ini
+COPY --from=building /building/new-conf/frpc_full.ini /frpc/frpc_full.ini
 
 ENTRYPOINT ["/usr/bin/frpc -c /frpc/frpc.ini"]
