@@ -1,5 +1,5 @@
 # frp-docker:
-Frp docker version bulit from fatedier/frp latest relase (100% oringal source code used from [fatedier/frp](https://github.com/fatedier/frp)).
+Frp docker version bulit from fatedier/frp oringal source code latest relase.
 
 Frp: A fast reverse proxy to help you expose a local server behind a NAT or firewall to the internet.
 
@@ -16,8 +16,7 @@ linux/amd64
 linux/arm64  
 linux/arm/v6  
 linux/arm/v7  
-linux/arm/v8  
-linux/386  
+linux/arm/v8   
 linux/ppc64le  
 linux/s390x  
 
