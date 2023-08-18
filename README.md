@@ -58,8 +58,11 @@ linux/s390x
 
 # frps 
 **1.Deploy**  
-**Note: Please configure environment variables: "BIND_ADDR" "BIND_PORT" "TOKEN"  according to your own network configuration**  
-- **Docker Run**  
+**Note: Please configure environment variables according to your own network configuration:**
+--**BIND_ADDR = the ip address of your server**
+--**BIND_PORT = the port that your server uses frp service**
+--**TOKEN = the secret token for frp service** 
+- **Docker Run (Example)**  
 ```
 docker run -d \
   --name frps \
@@ -70,7 +73,7 @@ docker run -d \
   -v ~/frps.ini:/app/frps/frps.ini \
   minsdatadocker/frps:latest  
 ```
-- **Docker-Compose**  
+- **Docker-Compose (Example)**  
 ```
 version: '3'
 services:
@@ -99,8 +102,11 @@ token = YOURTOKEN
   
 # frpc
 **1.Deploy**  
-**Note: Please configure environment variables: "SERVER_ADDR" "SERVER_PORT" "TOKEN"  according to your own network configuration**  
-- **Docker Run**  
+**Note: Please configure environment variables according to your own network configuration :**
+--**SERVER_ADDR = the ip address of your server (frps)**
+--**SERVER_PORT = the port that your server uses frp service (frps)**
+--**TOKEN = the secret token for frp service** 
+- **Docker Run (Example)**  
 ```
 docker run -d \
   --name frpc \
@@ -111,7 +117,7 @@ docker run -d \
   -v ~/frpc.ini:/app/frpc/frpc.ini \
   minsdatadocker/frpc:latest  
 ```
-- **Docker-Compose**  
+- **Docker-Compose (Example)**  
 ```
 version: '3'
 services:
