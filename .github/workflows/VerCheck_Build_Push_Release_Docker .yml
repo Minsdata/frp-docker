@@ -1,21 +1,23 @@
 name: VerCheck Build Push Release Docker 
 #normal mode
-on:
-  schedule:
-    - cron: "0 */6 * * *"
+#on:
+#  schedule:
+#    - cron: "0 */6 * * *"
 
 #test mode
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      tag:
-#        description: 'Image tag'
-#        required: true
-#        default: 'test the action'
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test the action'
 
 env:
   PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6"
   IMAGE_NAME_PREFIX: "minsdatadocker"
+  DOCKERFILE_FRPS: "./dockerfiles/Dockerfile-for-frps"
+  DOCKERFILE_FRPC: "./dockerfiles/Dockerfile-for-frpc"
 
 jobs:
   build_and_publish:
@@ -39,7 +41,7 @@ jobs:
 
       - name: Compare versions and skip if same
         run: |
-          if [[ "$FRP_VERSION" == "$DOCKERHUB_VERSION" ]]; then
+          if [[ "$FRP_VERSION" != "$DOCKERHUB_VERSION" ]]; then
             echo "Versions are the same. Skipping build and publish."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
@@ -60,27 +62,53 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+ #     - name: Build and Push FRPS Docker image
+ #       if: env.SKIP_BUILD != 'true'
+ #       run: |
+ #         DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
+ #         
+ #         docker buildx build -f $DOCKERFILE \
+ #           --platform $PLATFORMS \
+ #           -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
+ #           -t $IMAGE_NAME_PREFIX/frps:latest \
+ #           --push .
+
       - name: Build and Push FRPS Docker image
         if: env.SKIP_BUILD != 'true'
-        run: |
-          DOCKERFILE="./dockerfiles/Dockerfile-for-frps"
-          
-          docker buildx build -f $DOCKERFILE \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frps:latest \
-            --push .
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: $DOCKERFILE_FRPS
+          platforms: $PLATFORMS
+          push: true
+          tags: |
+            $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
+            $IMAGE_NAME_PREFIX/frps:latest
+
+ #     - name: Build and Push FRPC Docker image
+ #       if: env.SKIP_BUILD != 'true'
+ #       run: |
+ #         DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
+ #         
+ #         docker buildx build -f $DOCKERFILE \
+ #           --platform $PLATFORMS \
+ #           -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
+ #           -t $IMAGE_NAME_PREFIX/frpc:latest \
+ #           --push .
 
       - name: Build and Push FRPC Docker image
         if: env.SKIP_BUILD != 'true'
-        run: |
-          DOCKERFILE="./dockerfiles/Dockerfile-for-frpc"
-          
-          docker buildx build -f $DOCKERFILE \
-            --platform $PLATFORMS \
-            -t $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION \
-            -t $IMAGE_NAME_PREFIX/frpc:latest \
-            --push .
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: $DOCKERFILE_FRPC
+          platforms: $PLATFORMS
+          push: true
+          tags: |
+            $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
+            $IMAGE_NAME_PREFIX/frpc:latest
+
+
 
       - name: Create Release
         if: env.SKIP_BUILD != 'true'
