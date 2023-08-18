@@ -50,7 +50,7 @@ services:
       - ~/frps.ini:/app/frps/frps.ini
 ```
 **2.Edit configuration file (frps.ini),**  
-**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frps.ini file and configure them yourself**  
+- **You may need to use environment variables for the first startup, and then you can delete the environment variables in the frps.ini file and configure them yourself**  
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
@@ -91,7 +91,7 @@ services:
       - ~/frpc.ini:/app/frpc/frpc.ini
 ```
 **2.Edit configuration file (frpc.ini),**  
-**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frpc.ini file and configure them yourself**  
+- **You may need to use environment variables for the first startup, and then you can delete the environment variables in the frpc.ini file and configure them yourself**  
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
