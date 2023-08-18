@@ -9,18 +9,6 @@ The latest release version is: [![Latest Release](https://img.shields.io/github/
     </a>
 </p>  
 
-<p align="center">
-	<br><br>
-        <a href="https://github.com/Minsdata/frp-docker/releases">
-		<img src="https://img.shields.io/badge/version-0.51.3-green.svg?style=for-the-badge">
-	</a>
-	<a href="https://hub.docker.com/repository/docker/minsdatadocker/frps">
-		<img src="https://img.shields.io/docker/stars/minsdatadocker/frps.svg?style=for-the-badge">
-	</a>
-	<a href="https://hub.docker.com/repository/docker/minsdatadocker/frps">
-		<img src="https://img.shields.io/docker/pulls/minsdatadocker/frps.svg?style=for-the-badge">
-	</a>
-</p>
 # frp-docker:
 Frp docker version bulit from fatedier/frp oringal source code latest relase.
 
