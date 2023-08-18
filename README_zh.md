@@ -35,7 +35,7 @@
 </p>  
   
 # frp-docker:  
-此Frp docker 版本由 [fatedier/frp](https://github.com/fatedier/frp) 原生的最新版本源代码构建。  
+此frp docker 版本由 [fatedier/frp](https://github.com/fatedier/frp) 原生的最新版本源代码构建。  
   
 Frp：一种快速反向代理，可帮助您将 NAT 或防火墙后面的本地服务器暴露给互联网。  
   
