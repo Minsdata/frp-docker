@@ -90,7 +90,7 @@ services:
 ```
 **2.编辑配置文件 (frps.ini),**  
 - **首次启动你可能需要使用环境变量，之后可以删除frps.ini文件中的环境变量，自行配置参数**  
-**具体参数请参考 [README](https://github.com/fatedier/frp#readme)**  
+**具体参数请参考 [文档](https://gofrp.org/docs/)**  
 - **示例**
 ```
 # frps.ini
@@ -134,7 +134,7 @@ services:
 ```
 **2.Edit configuration file (frpc.ini),**  
 - **首次启动你可能需要使用环境变量，之后可以删除frpc.ini文件中的环境变量，自行配置参数**  
-**具体参数请参考 [README](https://github.com/fatedier/frp#readme)**  
+**具体参数请参考 [文档](https://gofrp.org/docs/)**  
 - **示例**
 ```
 # frpc.ini
