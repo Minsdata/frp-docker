@@ -62,7 +62,7 @@ linux/s390x
 --**BIND_ADDR = 你的服务端使用的IP地址**  
 --**BIND_PORT = 你的服务端使用的数据传输端口**  
 --**TOKEN = 安全令牌**  
-- **Docker Run**  
+- **Docker Run(示例)**  
 ```
 docker run -d \
   --name frps \
@@ -73,7 +73,7 @@ docker run -d \
   -v ~/frps.ini:/app/frps/frps.ini \
   minsdatadocker/frps:latest  
 ```
-- **Docker-Compose**  
+- **Docker-Compose(示例)**  
 ```
 version: '3'
 services:
@@ -106,7 +106,7 @@ token = YOURTOKEN
 --**SERVER_ADDR = 你的服务端(frps)使用的IP地址**  
 --**SERVER_PORT = 你的服务端（frps）使用的数据传输端口**  
 --**TOKEN = 安全令牌**  
-- **Docker Run**  
+- **Docker Run(示例)**  
 ```
 docker run -d \
   --name frpc \
@@ -117,7 +117,7 @@ docker run -d \
   -v ~/frpc.ini:/app/frpc/frpc.ini \
   minsdatadocker/frpc:latest  
 ```
-- **Docker-Compose**  
+- **Docker-Compose(示例)**  
 ```
 version: '3'
 services:
