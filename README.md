@@ -21,7 +21,8 @@ linux/ppc64le
 linux/s390x  
 
 # frps 
-**1.Deploy，Note: Please configure environment variables: "BIND_ADDR" "BIND_PORT" "TOKEN"  according to your own network configuration**  
+**1.Deploy**  
+**Note: Please configure environment variables: "BIND_ADDR" "BIND_PORT" "TOKEN"  according to your own network configuration**  
 - **Docker Run**  
 ```
 docker run -d \
@@ -48,8 +49,8 @@ services:
     volumes:
       - ~/frps.ini:/app/frps/frps.ini
 ```
-**2.Edit configuration file (frps.ini),**
-**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frps.ini file and configure them yourself**
+**2.Edit configuration file (frps.ini),**  
+**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frps.ini file and configure them yourself**  
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
@@ -61,7 +62,8 @@ token = YOURTOKEN
 ```  
   
 # frpc
-**1.Deploy, Please configure environment variables: "SERVER_ADDR" "SERVER_PORT" "TOKEN"  according to your own network configuration**  
+**1.Deploy**  
+**Note: Please configure environment variables: "SERVER_ADDR" "SERVER_PORT" "TOKEN"  according to your own network configuration**  
 - **Docker Run**  
 ```
 docker run -d \
@@ -88,8 +90,8 @@ services:
     volumes:
       - ~/frpc.ini:/app/frpc/frpc.ini
 ```
-**2.Edit configuration file (frpc.ini),**
-**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frpc.ini file and configure them yourself**
+**2.Edit configuration file (frpc.ini),**  
+**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frpc.ini file and configure them yourself**  
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
