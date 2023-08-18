@@ -21,12 +21,15 @@ linux/ppc64le
 linux/s390x  
 
 # frps 
-**1.Deploy**  
+**1.Deploy，Note: Please configure environment variables: "BIND_ADDR" "BIND_PORT" "TOKEN"  according to your own network configuration**  
 - **Docker Run**  
 ```
 docker run -d \
   --name frps \
   --restart unless-stopped \
+  -e BIND_ADDR=0.0.0.0 \
+  -e BIND_PORT=7000 \
+  -e TOKEN=YOURTOKEN \
   -v ~/frps.ini:/app/frps/frps.ini \
   minsdatadocker/frps:latest  
 ```
@@ -38,10 +41,15 @@ services:
     image: minsdatadocker/frps:latest
     container_name: frps
     restart: unless-stopped
+    environment: 
+    - ENV BIND_ADDR=0.0.0.0
+    - BIND_PORT=7000
+    - TOKEN=YOURTOKEN
     volumes:
       - ~/frps.ini:/app/frps/frps.ini
 ```
 **2.Edit configuration file (frps.ini),**
+**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frps.ini file and configure them yourself**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
@@ -53,12 +61,15 @@ token = YOURTOKEN
 ```  
   
 # frpc
-**1.Deploy**  
+**1.Deploy, Please configure environment variables: "SERVER_ADDR" "SERVER_PORT" "TOKEN"  according to your own network configuration**  
 - **Docker Run**  
 ```
 docker run -d \
   --name frpc \
   --restart unless-stopped \
+  -e SERVER_ADDR=172.17.0.1 \
+  -e SERVER_PORT=7000 \
+  -e TOKEN=YOURTOKEN \
   -v ~/frpc.ini:/app/frpc/frpc.ini \
   minsdatadocker/frpc:latest  
 ```
@@ -70,10 +81,15 @@ services:
     image: minsdatadocker/frpc:latest
     container_name: frpc
     restart: unless-stopped
+    environment: 
+    - SERVER_ADDR=172.17.0.1
+    - SERVER_PORT=7000
+    - TOKEN=YOURTOKEN
     volumes:
       - ~/frpc.ini:/app/frpc/frpc.ini
 ```
 **2.Edit configuration file (frpc.ini),**
+**You may need to use environment variables for the first startup, and then you can delete the environment variables in the frpc.ini file and configure them yourself**
 **Please refer to [README](https://github.com/fatedier/frp#readme)**  
 - **Example**
 ```
