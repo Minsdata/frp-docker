@@ -1,4 +1,4 @@
-[![Latest Release](https://img.shields.io/github/release/:owner/:repo.svg)](https://github.com/:owner/:repo/releases/latest)
+[![Latest Release](https://img.shields.io/github/release/minsdata/frp-docker.svg)](https://github.com/minsdata/frp-docker/releases/latest)
 <p align="center">
 	<br><br>
         <a href="https://github.com/Minsdata/frp-docker/releases">
