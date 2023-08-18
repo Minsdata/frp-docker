@@ -14,7 +14,7 @@ on:
         default: 'test the action'
 
 env:
-  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6"
+#  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6"
   IMAGE_NAME_PREFIX: "minsdatadocker"
   DOCKERFILE_FRPS: "./dockerfiles/Dockerfile-for-frps"
   DOCKERFILE_FRPC: "./dockerfiles/Dockerfile-for-frpc"
@@ -79,7 +79,7 @@ jobs:
         with:
           context: .
           file: $DOCKERFILE_FRPS
-          platforms: $PLATFORMS
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
             $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
@@ -102,7 +102,7 @@ jobs:
         with:
           context: .
           file: $DOCKERFILE_FRPC
-          platforms: $PLATFORMS
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
             $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
