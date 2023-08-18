@@ -1,3 +1,4 @@
+[README](README.md) | [中文文档](README_zh.md)
 <p align="left">
     <a href="https://github.com/minsdata/frp-docker/releases/latest" style="display: inline-block;">
         <img src="https://img.shields.io/github/release/minsdata/frp-docker.svg?style=for-the-badge&color=green" alt="Latest Release" width="150" height="32">
