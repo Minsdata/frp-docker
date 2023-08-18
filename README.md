@@ -58,10 +58,10 @@ linux/s390x
 
 # frps 
 **1.Deploy**  
-**Note: Please configure environment variables according to your own network configuration:**
---**BIND_ADDR = the ip address of your server**
---**BIND_PORT = the port that your server uses frp service**
---**TOKEN = the secret token for frp service** 
+**Note: Please configure environment variables according to your own network configuration:**  
+--**BIND_ADDR = the ip address of your server**  
+--**BIND_PORT = the port that your server uses frp service**  
+--**TOKEN = the secret token for frp service**  
 - **Docker Run (Example)**  
 ```
 docker run -d \
@@ -102,10 +102,10 @@ token = YOURTOKEN
   
 # frpc
 **1.Deploy**  
-**Note: Please configure environment variables according to your own network configuration :**
---**SERVER_ADDR = the ip address of your server (frps)**
---**SERVER_PORT = the port that your server uses frp service (frps)**
---**TOKEN = the secret token for frp service** 
+**Note: Please configure environment variables according to your own network configuration :**  
+--**SERVER_ADDR = the ip address of your server (frps)**  
+--**SERVER_PORT = the port that your server uses frp service (frps)**  
+--**TOKEN = the secret token for frp service**  
 - **Docker Run (Example)**  
 ```
 docker run -d \
