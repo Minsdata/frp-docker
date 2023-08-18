@@ -58,7 +58,10 @@ linux/s390x
   
 # frps（服务端）  
 **1.部署**  
-**注意：请根据自己的网络配置去设置环境变量：“BIND_ADDR” “BIND_PORT” “TOKEN”**  
+**注意：请根据自己的网络配置去设置环境变量：**  
+**BIND_ADDR = 你的服务端使用的IP地址**  
+**BIND_PORT = 你的服务端使用的数据传输端口**  
+**TOKEN = 安全令牌**  
 - **Docker Run**  
 ```
 docker run -d \
@@ -99,7 +102,10 @@ token = YOURTOKEN
   
 # frpc（客户端） 
 **1.部署**  
-**注意：请根据自己的网络配置去设置环境变量："SERVER_ADDR" "SERVER_PORT" "TOKEN"**  
+**注意：请根据自己的网络配置去设置环境变量：**  
+**SERVER_ADDR = 你的服务端(frps)使用的IP地址**  
+**SERVER_PORT = 你的服务端（frps）使用的数据传输端口**  
+**TOKEN = 安全令牌**  
 - **Docker Run**  
 ```
 docker run -d \
