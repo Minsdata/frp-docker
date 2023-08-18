@@ -1,6 +1,8 @@
 <p align="center">
 	<br><br>
-	<img src="https://img.shields.io/badge/version-0.51.3-green.svg?style=for-the-badge">
+        <a href="[https://hub.docker.com/repository/docker/minsdatadocker/frps](https://github.com/Minsdata/frp-docker/releases)">
+		<img src="https://img.shields.io/badge/version-0.51.3-green.svg?style=for-the-badge">
+	</a>
 	<a href="https://hub.docker.com/repository/docker/minsdatadocker/frps">
 		<img src="https://img.shields.io/docker/stars/minsdatadocker/frps.svg?style=for-the-badge">
 	</a>
