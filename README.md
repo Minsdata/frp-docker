@@ -1,5 +1,6 @@
 <p align="center">
 	<br><br>
+	[![Latest Release](https://img.shields.io/github/release/:owner/:repo.svg)](https://github.com/:owner/:repo/releases/latest)
         <a href="https://github.com/Minsdata/frp-docker/releases">
 		<img src="https://img.shields.io/badge/version-0.51.3-green.svg?style=for-the-badge">
 	</a>
