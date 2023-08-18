@@ -1,6 +1,6 @@
 [![Latest Release](https://img.shields.io/github/release/minsdata/frp-docker.svg)](https://github.com/minsdata/frp-docker/releases/latest)
 Docker: [![Docker Stars](https://img.shields.io/docker/stars/minsdatadocker/frps.svg)](https://hub.docker.com/r/minsdatadocker/frps)
-Docker: [![Docker Pulls](https://img.shields.io/docker/pulls/minsdatadocker/frps.svg)](https://hub.docker.com/r/minsdatadocker/frps)
+Docker: [![Docker Pulls](https://img.shields.io/docker/pulls/minsdatadocker/frps.svg)](https://hub.docker.com/r/minsdatadocker/frps) 
 <p align="center">
 	<br><br>
         <a href="https://github.com/Minsdata/frp-docker/releases">
