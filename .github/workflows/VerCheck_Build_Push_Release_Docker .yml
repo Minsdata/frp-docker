@@ -14,7 +14,15 @@ on:
         default: 'test the action'
 
 env:
-#  PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6"
+  PLATFORMS: |
+    linux/amd64
+    linux/arm64
+    linux/ppc64le
+    linux/s390x
+    linux/arm/v8
+    linux/arm/v7
+    linux/arm/v6
+    IMAGE_NAME_PREFIX: "minsdatadocker"    
   IMAGE_NAME_PREFIX: "minsdatadocker"
   DOCKERFILE_FRPS: "./dockerfiles/Dockerfile-for-frps"
   DOCKERFILE_FRPC: "./dockerfiles/Dockerfile-for-frpc"
@@ -62,6 +70,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Set environment variables
+        run: |
+          echo "PLATFORMS=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6" >> $GITHUB_ENV
+          echo "IMAGE_NAME_PREFIX=minsdatadocker" >> $GITHUB_ENV
+          
+          echo "DOCKERFILE_FRPS=./dockerfiles/Dockerfile-for-frps" >> $GITHUB_ENV
+          echo "DOCKERFILE_FRPC=./dockerfiles/Dockerfile-for-frpc" >> $GITHUB_ENV
+          
+          echo "TAG_FRPS_VER=minsdatadocker/frps:v${{ env.FRP_VERSION }}" >> $GITHUB_ENV
+          echo "TAG_FRPS_LATEST=minsdatadocker/frps:latest" >> $GITHUB_ENV
+          
+          echo "TAG_FRPC_VER=minsdatadocker/frpc:v${{ env.FRP_VERSION }}" >> $GITHUB_ENV
+          echo "TAG_FRPC_LATEST=minsdatadocker/frpc:latest" >> $GITHUB_ENV
+
  #     - name: Build and Push FRPS Docker image
  #       if: env.SKIP_BUILD != 'true'
  #       run: |
@@ -78,12 +100,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: $DOCKERFILE_FRPS
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          file: ${{ env.DOCKERFILE_FRPS }}
+          platforms: ${{ env.PLATFORMS }}
           push: true
           tags: |
-            $IMAGE_NAME_PREFIX/frps:v$FRP_VERSION
-            $IMAGE_NAME_PREFIX/frps:latest
+            ${{ env.TAG_FRPS_VER }}
+            ${{ env.TAG_FRPS_LATEST }}
 
  #     - name: Build and Push FRPC Docker image
  #       if: env.SKIP_BUILD != 'true'
@@ -101,12 +123,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: $DOCKERFILE_FRPC
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6
+          file: ${{ env.DOCKERFILE_FRPC }}
+          platforms: ${{ env.PLATFORMS }}
           push: true
           tags: |
-            $IMAGE_NAME_PREFIX/frpc:v$FRP_VERSION
-            $IMAGE_NAME_PREFIX/frpc:latest
+            ${{ env.TAG_FRPC_VER }}
+            ${{ env.TAG_FRPC_LATEST }}
 
 
 
