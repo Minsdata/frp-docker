@@ -1,6 +1,6 @@
 <p align="left">
     <a href="https://github.com/minsdata/frp-docker/releases/latest" style="display: inline-block;">
-        <img src="https://img.shields.io/github/release/minsdata/frp-docker.svg?style=for-the-badge&color=green" alt="Latest Release" width="200">
+        <img src="https://img.shields.io/github/release/minsdata/frp-docker.svg?style=for-the-badge&color=green" alt="Latest Release" width="150" height="32">
     </a>
 </p>
 <p align="center">
@@ -11,25 +11,25 @@
 
 <p align="center">
     <a href="https://hub.docker.com/r/minsdatadocker/frps">
-        <img src="https://img.shields.io/badge/Docker%20Image-minsdatadocker%2Ffrps-blue?style=for-the-badge" alt="Docker Image" width="220" height="40">
+        <img src="https://img.shields.io/badge/Docker%20Image-minsdatadocker%2Ffrps-blue?style=for-the-badge" alt="Docker Image" width="240" height="32">
     </a>
     <a href="https://hub.docker.com/r/minsdatadocker/frps">
-        <img src="https://img.shields.io/docker/stars/minsdatadocker/frps.svg?style=for-the-badge" alt="Docker Stars" width="220" height="40">
+        <img src="https://img.shields.io/docker/stars/minsdatadocker/frps.svg?style=for-the-badge" alt="Docker Stars" width="140" height="32">
     </a>
     <a href="https://hub.docker.com/r/minsdatadocker/frps">
-        <img src="https://img.shields.io/docker/pulls/minsdatadocker/frps.svg?style=for-the-badge" alt="Docker Pulls" width="220" height="40">
+        <img src="https://img.shields.io/docker/pulls/minsdatadocker/frps.svg?style=for-the-badge" alt="Docker Pulls" width="140" height="32">
     </a>
 </p>
 
 <p align="center">
     <a href="https://hub.docker.com/r/minsdatadocker/frpc">
-        <img src="https://img.shields.io/badge/Docker%20Image-minsdatadocker%2Ffrpc-blue?style=for-the-badge" alt="Docker Image" width="220" height="40">
+        <img src="https://img.shields.io/badge/Docker%20Image-minsdatadocker%2Ffrpc-blue?style=for-the-badge" alt="Docker Image" width="240" height="32">
     </a>
     <a href="https://hub.docker.com/r/minsdatadocker/frpc">
-        <img src="https://img.shields.io/docker/stars/minsdatadocker/frpc.svg?style=for-the-badge" alt="Docker Stars" width="220" height="40">
+        <img src="https://img.shields.io/docker/stars/minsdatadocker/frpc.svg?style=for-the-badge" alt="Docker Stars" width="140" height="32">
     </a>
     <a href="https://hub.docker.com/r/minsdatadocker/frpc">
-        <img src="https://img.shields.io/docker/pulls/minsdatadocker/frpc.svg?style=for-the-badge" alt="Docker Pulls" width="220" height="40">
+        <img src="https://img.shields.io/docker/pulls/minsdatadocker/frpc.svg?style=for-the-badge" alt="Docker Pulls" width="140" height="32">
     </a>
 </p>  
   
