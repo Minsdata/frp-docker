@@ -97,7 +97,7 @@ bind_port = 7000
 token = YOURTOKEN
 ```  
   
-# frpc
+# frpc（客户端） 
 **1.部署**  
 **注意：请根据自己的网络配置去设置环境变量："SERVER_ADDR" "SERVER_PORT" "TOKEN"**  
 - **Docker Run**  
