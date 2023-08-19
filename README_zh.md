@@ -39,7 +39,7 @@
   
 Frp：一种快速反向代理，可帮助您将 NAT 或防火墙后面的本地服务器暴露给互联网。  
   
-为了保持最新版本，镜像将每6小时自动对[fatedier/frp](https://github.com/fatedier/frp)源代码进行一次版本检查和更新。  
+为了保持最新版本，镜像将每24小时自动对[fatedier/frp](https://github.com/fatedier/frp)源代码进行一次版本检查和更新。  
   
 # Dockerhub:  
   
