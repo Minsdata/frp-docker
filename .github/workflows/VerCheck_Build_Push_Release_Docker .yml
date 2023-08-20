@@ -1,17 +1,17 @@
 name: VerCheck Build Push Release Docker 
 #normal mode
-on:
-  schedule:
-    - cron: "0 0 */1 * *"
+#on:
+#  schedule:
+#    - cron: "0 0 */1 * *"
 
 #test mode
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      tag:
-#        description: 'Image tag'
-#        required: true
-#        default: 'test the action'
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        default: 'test the action'
         
 
 jobs:
@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Set environment variables for DockerhubRepo
+        run: |
+          echo "IMAGE_NAME_PREFIX=minsdatadocker" >> $GITHUB_ENV
 
       - name: Get latest Docker Hub version
         run: |
@@ -60,7 +64,6 @@ jobs:
         if: ${{ env.SKIP_BUILD }} != 'true'
         run: |
           echo "PLATFORMS=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6" >> $GITHUB_ENV
-          echo "IMAGE_NAME_PREFIX=minsdatadocker" >> $GITHUB_ENV
           
           echo "DOCKERFILE_FRPS=./dockerfiles/Dockerfile-for-frps" >> $GITHUB_ENV
           echo "DOCKERFILE_FRPC=./dockerfiles/Dockerfile-for-frpc" >> $GITHUB_ENV
