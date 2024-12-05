@@ -65,7 +65,7 @@ jobs:
       - name: Set environment variables for PLATFORMS, DOCKERFILE, TAG
         if: env.SKIP_BUILD != 'true'
         run: |
-          echo "PLATFORMS=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6" >> $GITHUB_ENV
+          echo "PLATFORMS=linux/amd64,linux/arm64,linux/arm/v8,linux/arm/v7" >> $GITHUB_ENV
           
           echo "DOCKERFILE_FRPS=./dockerfiles/Dockerfile-for-frps" >> $GITHUB_ENV
           echo "DOCKERFILE_FRPC=./dockerfiles/Dockerfile-for-frpc" >> $GITHUB_ENV
